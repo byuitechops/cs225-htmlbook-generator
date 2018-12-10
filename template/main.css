@@ -1,0 +1,9 @@
+#content {
+    font-family: "Roboto", sans-serif;
+    max-width: 900px;
+    margin: auto;
+}
+
+.table {
+    overflow-x: auto;
+}
