@@ -1,15 +1,19 @@
 /*************************************************************************
  * Module Description
  *************************************************************************/
+const tasks = require('./tasks/tasks.js');
+
 module.exports = {
-    main (args) {
-        supportingFunction1 ();
-        supportingFunction2 ();
-        supportingFunction3 ();
+    main(args) {
+        supportingFunction1();
+        supportingFunction2();
+        supportingFunction3();
         return 0;
     }
 };
 
-function supportingFunction1 () {}
-function supportingFunction2 () {}
-function supportingFunction3 () {}
+function supportingFunction1() {}
+
+function supportingFunction2() {}
+
+function supportingFunction3() {}
