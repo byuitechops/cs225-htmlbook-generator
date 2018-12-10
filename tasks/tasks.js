@@ -1,4 +1,4 @@
-let replaceCodeBlocks = require('replaceCodeBlocks.js');
+let replaceCodeBlocks = require('./replaceCodeBlocks.js');
 
 module.exports = {
     replaceCodeBlocks
