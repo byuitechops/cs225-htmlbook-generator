@@ -9,9 +9,21 @@ function editBlock() {
         let actualCode = newElement.find('.theCode').text();
         let language = newElement.find('pre').attr('class');
         let languageMap = {
-            oracle11: 'sql'
+            sql: ' class="langauge-sql"',
+            oracle11: ' class="langauge-sql"',
+            mysql: ' class="langauge-sql"',
+            oracle11i: ' class="langauge-sql"',
+            plsql: ' class="langauge-plsql"',
+            bash: ' class="langauge-bash"',
+            dos: ' class="langauge-powershell"',
+            php: ' class="langauge-php"',
+            html: ' class="langauge-html"',
+            java: ' class="langauge-java"'
+
+            //NOTE: for .txt, .text, .test, and any other mistyped classes that may arise
+            //[`${}`]: ''
         }
-        newElement.replaceWith(`<pre><code class='langauge-${languageMap[language]}'>${actualCode}</code></pre>`);
+        newElement.replaceWith(`<pre><code${languageMap[language]}>${actualCode}</code></pre>`);
     });
     console.log($.html());
 }
