@@ -1,5 +1,8 @@
 let replaceCodeBlocks = require('./replaceCodeBlocks.js');
 
-module.exports = {
-    replaceCodeBlocks
+module.exports = function (htmlObj) {
+    return [
+        (callback) => callback(null, htmlObj),
+        replaceCodeBlocks
+    ];
 };
