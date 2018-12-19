@@ -28,7 +28,7 @@ function getOutput(err, htmlObj) {
     if (err) {
         console.error(err);
     } else {
-        fs.writeFile(`./new_html_files/new_${htmlObj.fileName}.html`, htmlObj.htmlText, err => {
+        fs.writeFile(`./new_html_files/new_${htmlObj.fileName}`, htmlObj.htmlText, err => {
             if (err) {
                 console.error(err);
             } else {

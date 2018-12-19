@@ -5,10 +5,10 @@ let $;
 function replaceCodeBlocks(htmlObj, callback) {
     $ = cheerio.load(htmlObj.htmlText);
     let wpSyntaxClasses = $('.wp_syntax');
-    wpSyntaxClasses.each((i, element) => {
-        let newElement = $(element);
-        let actualCode = newElement.find('.theCode').text();
-        let language = newElement.find('pre').attr('class');
+    wpSyntaxClasses.each(function () {
+        let element = $(this);
+        let actualCode = element.find('td.code').text();
+        let language = element.find('pre').attr('class');
         let languageMap = {
             sql: 'sql',
             oracle11: 'sql',
@@ -22,9 +22,9 @@ function replaceCodeBlocks(htmlObj, callback) {
             java: 'java'
         };
         if (languageMap[language]) {
-            newElement.replaceWith(`<pre><code class="language-${languageMap[language]}">${actualCode}</code></pre>`);
+            element.replaceWith(`<pre><code class="language-${languageMap[language]}">${actualCode}</code></pre>`);
         } else {
-            newElement.replaceWith(`<pre><code class="language-markup">${actualCode}</code></pre>`);
+            element.replaceWith(`<pre><code class="language-markup">${actualCode}</code></pre>`);
         }
     });
     htmlObj.htmlText = $.html();
