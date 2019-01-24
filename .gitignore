@@ -37,8 +37,7 @@ node_modules/
 jspm_packages/
 
 # HTML Files
-# new_html_files/
-old_html_files/
+html_files/
 
 # TypeScript v1 declaration files
 typings/
