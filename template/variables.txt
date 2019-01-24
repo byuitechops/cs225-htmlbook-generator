@@ -1,0 +1,5 @@
+*middle     | #article                   | html
+*title      | #topBar                    | html
+*bannerSrc  | #content img:first-of-type | src
+*paragraphs | p                          | html | array
+isSplash    | .splash                    | bool
