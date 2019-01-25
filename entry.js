@@ -40,5 +40,5 @@ function getOutput(err, htmlObj) {
 }
 
 (function () {
-    getInput('./old_html_files', main);
+    getInput('./html_files/template', main);
 })();

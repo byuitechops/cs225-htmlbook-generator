@@ -5,8 +5,8 @@
   "main": "main.js",
   "scripts": {
     "template": "cd ./html_files && template-changer ../template/variables.txt ../template/template.handlebars",
-    "all": "cd ./html_files && template-changer ../template/variables.txt ../template/template.handlebars && cd ../ && node entry.js",
-    "start": "node entry.js",
+    "cleanup": "node entry.js",
+    "start": "cd ./html_files && template-changer ../template/variables.txt ../template/template.handlebars && cd ../ && node entry.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

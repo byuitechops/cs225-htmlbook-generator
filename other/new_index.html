@@ -1,0 +1,2950 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Stored Programs at Database Tutorial</title>
+  <link href="../template/main.css" rel="stylesheet">
+  <link href="../materialize/css/materialize.min.css" rel="stylesheet">
+  <link href="../prism/prism.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+  <div id="content">
+    <h2 id="post-6948">Stored Programs</h2>
+    <div class="main">
+      <p>Oracle introduced the PL/SQL programming language more than 20 years ago in the Oracle 6 database. PL/SQL
+        provides a procedural extentestsion to SQL and lets you call SQL from a PL/SQL program, or vice versa. This
+        blog
+        page introduces you to the basics of writing stored programs in Oracle 11g and provides a summary overview of
+        PL/SQL. You can find more complete treatment in Oracle Database 11g PL/SQL Programming.</p>
+      <p>The concept of transactional SQL units delivered by <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code>
+        statements and be combined with PL/SQL blocks and Transactional Control Language (TCL) let you write powerful
+        database-centric programs.</p>
+      <p>In this blog page, you&#x2019;ll learn the basics of writing PL/SQL programs. The chapter covers the following
+        topics:</p>
+      <ul class="browser-default">
+        <li>Blocks</li>
+        <li>Variables</li>
+        <li>Control structures</li>
+        <li>Exception handling</li>
+      </ul>
+      <p>As you read through these sections, remember that PL/SQL is a strongly typed language. Strongly typed
+        languages constrain how you assign or compare values of different data types. PL/SQL borrows its block syntax
+        from the Ada and Pascal programming languages. It&#x2019;s a natural fit with SQL.</p>
+      <p>The PL/SQL assignment operator (<code>:=</code>) makes writing PL/SQL assignments straightforward. It also
+        eliminates any confusion between the assignment operator and comparison operator (<code>=</code>) in PL/SQL.</p>
+      <ul class="collapsible expandable">
+        <li>
+          <div title="Click to see the instructions ..." class="collapsible-header">Anonymous Blocks
+            <i class="material-icons left">keyboard_arrow_right</i>
+          </div>
+          <div class="collapsible-body">
+            <h4>Anonymous Blocks</h4>
+            <p>PL/SQL blocks come in two types: anonymous (or unnamed) and named blocks. Anonymous block programs have
+              a
+              fixed scope, while named blocks are more extensible resources. Named blocks are stored programs in an
+              Oracle database.</p>
+            <div style="margin-left:0px">
+              <p style="clear:both">
+              </p>
+              <p>You can use anonymous block programs in scripts or nested inside other program units. They have
+                scope
+                only in the context of the program unit or script where you put them. You can&#x2019;t call anonymous
+                blocks
+                from other blocks by name, because they haven&#x2019;t got a name. All variables are passed to these
+                local
+                blocks by reference, which is the default in PL/SQL&#x2019;s scope model. This means an anonymous block
+                program unit can reference any variables in the external or calling scope. The single exception to
+                this
+                rule occurs when you declare a local variable that replaces a calling scope variable.</p>
+              <p>You can store named block programs directly as functions or procedures in a schema. These functions
+                and procedures are schema-level named programs. Their scope is the most flexible for three reasons:
+                You
+                can call them from the schema where they&#x2019;re defined. Alternatively, you can call them from
+                another
+                schema that&#x2019;s been granted the execute privilege on the named program unit. Lastly, you can call
+                schema-level programs across a <code>DB_LINK</code>. <code>DB_LINK</code>s support calls between two
+                database instances across the network. Schema-level named programs present an interesting comparative
+                paradigm, because they act as public access methods in the scope of the schema but protected access
+                methods in the scope of the database.</p>
+              <p>Beyond schema level functions and procedures, you can create packages, which consist of a package
+                specification and a body. These are containers for groups of related functions and procedures. You
+                can
+                store named block programs inside packages in two ways: One way requires that you publish the package
+                function or procedure. You do this by defining the function or procedure specification inside the
+                package specification. This makes package functions and procedures callable from other programs in
+                the
+                same schema or from other programs in schema where other users have the execute privilege on the
+                package. These are package functions and procedures. They&#x2019;re closest to static methods with a
+                protected
+                access scope. You can also store functions and procedures exclusively in package bodies. This limits
+                them to internal package access only, and you call these package-level programs units. They&#x2019;re
+                most
+                like private access methods in object-oriented languages such as Java.</p>
+              <p>You can store named block programs inside user-defined types (UDTs). Like named block programs
+                inside
+                packages, you can deploy these as published or unpublished methods. You can also make these static or
+                instance methods. Static methods are available without an existing instance, while instance methods
+                require that you first create an instance of the UDT in memory. Static methods act like package
+                functions and procedures, while instance methods act like object type functions and procedures.</p>
+              <p>Finally, you can store named block programs inside the declaration block of anonymous or named block
+                programs. These named block programs are known as local named block programs. You can call them only
+                from within the scope of their host program. They can&#x2019;t see other locally named programs unless
+                these
+                other programs are declared before the local programs in the same runtime scope. You can fix this by
+                adopting forward references before declaring local functions. A forward reference is a stub for a
+                named
+                block. The stub includes the subroutine name, parameter list, and any return type. Local named blocks
+                are like package-level program units or private access methods in object-oriented languages such as
+                Java.</p>
+              <ul class="collapsible expandable">
+                <li>
+                  <div title="Click to see the instructions ..." class="collapsible-header">PL/SQL Delimiter Table
+                    <i class="material-icons left">keyboard_arrow_right</i>
+                  </div>
+                  <div class="collapsible-body">
+                    <h4>PL/SQL Delimiter Table</h4>
+                    <p>The following table shows you all the delimiters, including the operators, you will see in
+                      PL/SQL.
+                      Short examples are provided where possible.</p>
+                    <div style="margin-left:0px">
+                      <div class="table">
+                        <table>
+                          <tbody>
+                            <tr class="table_row">
+                              <th class="lexical_symbol">Symbol</th>
+                              <th class="lexical_type">Type</th>
+                              <th class="lexical_definition">Description</th>
+                            </tr>
+                            <tr>
+                              <td class="lexical_symbol"><code>:=</code></td>
+                              <td valign="top" class="lexical_type">Assignment</td>
+                              <td class="lexical_definition">
+                                <p>The only assignment operator used in PL/SQL. You assign a right operand to a left
+                                  operand,
+                                  like so:</p>
+                                <p style="clear:both">
+                                </p>
+                                <pre><code class="language-sql">
+                                      a := b + c;
+                                    </code></pre>
+                                <p>This adds the numbers in variables <code>b</code> and <code>c</code>, and then
+                                  assigns
+                                  the
+                                  result
+                                  to variable <code>a</code>. The addition occurs before the assignment due to operator
+                                  precedence.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td><code>:</code></td>
+                              <td>Association</td>
+                              <td>
+                                <p>The <em>host variable indicator</em> precedes a valid identifier name and designates
+                                  that
+                                  identifier
+                                  as a session-level variable, also known as a bind variable, that can be defined with
+                                  SQL*Plus. Only
+                                  the <code>CHAR</code>, <code>CLOB</code>, <code>NCHAR</code>, <code>NCLOB</code>,
+                                  <code>NUMBER</code>,
+                                  <code>NVARCHAR2</code>, <code>REFCURSOR</code>, and <code>VARCHAR2</code> data types
+                                  are
+                                  available
+                                  for session variables.</p>
+                                <p>Here&#x2019;s the prototype:</p>
+
+                                <pre><code class="language-sql">
+                                    VARIABLE variable_name datatype_name
+                                  </code></pre>
+
+                                <p>This example implements the prototype by creating a session-level variable length
+                                  string:</p>
+
+                                <pre><code class="language-sql">
+                                    SQL&gt; VARIABLE my_string VARCHAR2(30)
+                                  </code></pre>
+
+                                <p>You can then assign a value using an anonymous block PL/SQL program:</p>
+
+                                <pre><code class="language-sql">
+                                    BEGIN
+  :my_string := &apos;A string literal.&apos;;
+END;
+/
+                                  </code></pre>
+
+                                <p>You can then query the result from the dual pseudo table:</p>
+
+                                <pre><code class="language-sql">
+                                    SELECT :my_string FROM dual;
+                                  </code></pre>
+
+                                <p>or reuse the variable in another PL/SQL block program, because the variable enjoys a
+                                  session-level
+                                  scope. A subsequent anonymous block program in a script could then print the value in
+                                  the
+                                  session
+                                  variable:</p>
+
+                                <pre><code class="language-sql">
+                                    BEGIN
+  dbms_output.put_line(:my_string);
+END;
+/
+                                  </code></pre>
+
+                                <p>This is a flexible way to exchange variables between multiple statements and PL/SQL
+                                  blocks
+                                  in a
+                                  single script file.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>&amp;</code></td>
+                              <td valign="top">Association</td>
+                              <td valign="top">
+                                <p>The <em>substitution</em> indicator lets you pass actual parameters into anonymous
+                                  block
+                                  PL/SQL
+                                  programs. Never assign substitution variables inside declaration blocks, because
+                                  assignment
+                                  errors
+                                  don&#x2019;t raise an error that you can catch in your exception block. Make
+                                  substitution
+                                  variable
+                                  assignments in the execution block. This example demonstrates the assignment of a
+                                  string
+                                  substitution
+                                  variable to a local variable in an execution block:</p>
+
+                                <pre><code class="language-sql">
+                                    a := &apos;&amp;string_in&apos;;
+                                  </code></pre>
+
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>%</code></td>
+                              <td valign="top">Association</td>
+                              <td valign="top">
+                                <p>The <em>attribute indicator</em> lets you link a database catalog column, row, or
+                                  cursor
+                                  attributes.
+                                  You anchor a variable data type when you link a variable to a catalog object such as
+                                  a
+                                  table
+                                  or
+                                  column.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>=&gt;</code></td>
+                              <td valign="top">Association</td>
+                              <td valign="top">
+                                <p>Use the <em>association operator</em> in name notation function and procedure calls.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>.</code></td>
+                              <td valign="top">Association</td>
+                              <td valign="top">
+                                <p>The <em>component selector</em> glues references together&#x2014;such as a schema
+                                  and
+                                  table,
+                                  package and
+                                  function, or object and member method. It is also used to link cursors and cursor
+                                  attributes
+                                  (columns). Here are some prototype examples:</p>
+
+                                <pre><code class="language-sql">
+                                    schema_name.table_name
+package_name.function_name
+object_name.member_method_name
+cursor_name.cursor_attribute
+                                  </code></pre>
+
+                                <p>These are referenced throughout many code examples.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>@</code></td>
+                              <td valign="top">Association</td>
+                              <td valign="top">
+                                <p>Use the remote access indicator to access a remote database through database links.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>||</code></td>
+                              <td valign="top">Concatenation</td>
+                              <td valign="top">
+                                <p>Use the <em>concatenation operator</em> to glue strings together:</p>
+
+                                <pre><code class="language-sql">
+                                    a := &apos;Glued&apos;||&apos; &apos;||&apos;together.&apos;;
+                                  </code></pre>
+
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>=</code></td>
+                              <td valign="top">Comparison</td>
+                              <td valign="top">
+                                <p>The <em>comparison operator</em> tests for equality of value and implicitly does
+                                  type
+                                  conversion
+                                  where possible. There is no identity comparison operator, because PL/SQL is a
+                                  strongly
+                                  typed
+                                  language. PL/SQL comparison operations are equivalent to identity comparisons,
+                                  because
+                                  you
+                                  can
+                                  compare only like-typed values.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>-</code></td>
+                              <td valign="top">Comparison</td>
+                              <td valign="top">
+                                <p>The <em>negation operator</em> changes a number from its positive to negative value.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>&lt;&gt;</code><br><code>!=</code><br><code>^=</code></td>
+                              <td valign="top">Comparison</td>
+                              <td valign="top">
+                                <p>Three <em>not-equal comparison operators</em> perform exactly like behaviors. You
+                                  can
+                                  use
+                                  whichever
+                                  suits your organizational needs.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>&gt;</code></td>
+                              <td valign="top">Comparison</td>
+                              <td valign="top">
+                                <p>This <em>inequality comparison operator</em> indicates that the left operand is
+                                  greater
+                                  than
+                                  the
+                                  right operand.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>&lt;</code></td>
+                              <td valign="top">Comparison</td>
+                              <td valign="top">
+                                <p>This <em>inequality comparison operator</em> indicates that the left operand is
+                                  greater
+                                  than
+                                  the
+                                  right operand.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>&gt;</code></td>
+                              <td valign="top">Comparison</td>
+                              <td valign="top">
+                                <p>This <em>inequality comparison operator</em> indicates that the left operand is
+                                  greater
+                                  than
+                                  the
+                                  right operand.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>&gt;=</code></td>
+                              <td valign="top">Comparison</td>
+                              <td valign="top">
+                                <p>This <em>inequality comparison operator</em> indicates that the left operand is
+                                  greater
+                                  than
+                                  or
+                                  equal to the right operand.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>&lt;=</code></td>
+                              <td valign="top">Comparison</td>
+                              <td valign="top">
+                                <p>This <em>inequality comparison operator</em> indicates that the left operand is less
+                                  than
+                                  or
+                                  equal
+                                  to the right operand.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>&apos;</code></td>
+                              <td valign="top">Delimiter</td>
+                              <td valign="top">
+                                <p>Use the <em>character string delimiter</em> to define a string literal value. You
+                                  can
+                                  assign
+                                  a
+                                  string literal to a variable a,</p>
+
+                                <pre><code class="language-sql">
+                                    a := &apos;A string literal.&apos;;
+                                  </code></pre>
+
+                                <p>to create a string literal from the set of characters between the character string
+                                  delimiters.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>(</code></td>
+                              <td valign="top">Delimiter</td>
+                              <td valign="top">
+                                <p>Use the <em>opening expression</em> or <em>list delimiter</em> to place a list of
+                                  comma-delimited
+                                  numeric or string literals or identifiers inside parentheses. Use parentheses to
+                                  enclose
+                                  formal and
+                                  actual parameters to subroutines, or to produce lists for comparative evaluations.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>)</code></td>
+                              <td valign="top">Delimiter</td>
+                              <td valign="top">
+                                <p>The <em>closing expression</em> or <em>list delimiter</em>. See the opening
+                                  expression
+                                  or
+                                  list
+                                  delimiter entry for more information.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>,</code></td>
+                              <td valign="top">Delimiter</td>
+                              <td valign="top">
+                                <p>The <em>item separator</em> delimits items in lists.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>&lt;&lt;</code></td>
+                              <td valign="top">Delimiter</td>
+                              <td valign="top">
+                                <p>Use the <em>opening delimiter</em> for labels in PL/SQL. Labels are any valid
+                                  identifiers
+                                  in
+                                  the
+                                  programming language.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>&gt;&gt;</code></td>
+                              <td valign="top">Delimiter</td>
+                              <td valign="top">
+                                <p>Use the closing delimiter for labels in PL/SQL.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>--</code></td>
+                              <td valign="top">Delimiter</td>
+                              <td valign="top">
+                                <p>With the single comment operator, everything to the right is treated as text and not
+                                  parsed
+                                  as part
+                                  of a PL/SQL program. Here&#x2019;s an example:</p>
+
+                                <pre><code class="language-sql">
+                                    -- This is a single line comment.
+                                  </code></pre>
+
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>/*</code></td>
+                              <td valign="top">Delimiter</td>
+                              <td valign="top">
+                                <p>Use the <em>opening multiple-line comment delimiter</em> for comments; it instructs
+                                  the
+                                  parser to
+                                  ignore everything until it reaches the closing multiple-line comment delimiter.
+                                  Here&#x2019;s an
+                                  example:</p>
+
+                                <pre><code class="language-sql">
+                                    /* This is line one.
+   This is line two. */
+                                  </code></pre>
+
+                                <p>You can format multiple line comments in many ways; choose one way that suits your
+                                  organization&#x2019;s
+                                  purposes and stick with it.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>*/</code></td>
+                              <td valign="top">Delimiter</td>
+                              <td valign="top">
+                                <p>The <em>closing multiple-line comment delimiter</em> instructs the parser that the
+                                  text
+                                  comment is
+                                  complete, and everything after it should be parsed as part of the program unit.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>&quot;</code></td>
+                              <td valign="top">Delimiter</td>
+                              <td valign="top">
+                                <p>Use the <em>quoted identifier delimiter</em> to access tables created in
+                                  case-sensitive
+                                  fashion from
+                                  the database catalog. This is required with database catalog objects created in a
+                                  case-sensitive way
+                                  and is applicable from Oracle 10<em>g</em> forward. This example creates a
+                                  case-sensitive
+                                  table or
+                                  column by using quoted identifier delimiters:</p>
+
+                                <pre><code class="language-sql">
+                                    CREATE TABLE &quot;Demo&quot;
+(&quot;Demo_ID&quot; NUMBER
+, demo_value VARCHAR2(10));
+                                  </code></pre>
+
+                                <p>Insert a row by using this quote-delimited syntax:</p>
+
+                                <pre><code class="language-sql">
+                                    INSERT INTO &quot;Demo1&quot; VALUES
+(1,&apos;One Line ONLY.&apos;);
+                                  </code></pre>
+
+                                <p>Like the SQL syntax, PL/SQL requires the quoted identifier delimiter to find the
+                                  database
+                                  catalog
+                                  object:</p>
+
+                                <pre><code class="language-sql">
+                                    BEGIN
+FOR i IN (SELECT &quot;Demo_ID&quot;, demo_id FROM &quot;Demo&quot;) LOOP
+dbms_output.put_line(i.&quot;Demo_ID&quot;);
+    dbms_output.put_line(i.demo_id);
+  END LOOP;
+END;
+/
+                                  </code></pre>
+
+                                <p>You must refer to any column names by using quote delimited syntax in the first
+                                  output
+                                  line,
+                                  where
+                                  the loop index (<code>i</code>) is followed by the component selector (<code>.</code>),
+                                  and
+                                  then a
+                                  quote delimited identifier (&#x201C;<code>Demo_ID</code>&#x201C;). No quotes are
+                                  required
+                                  to
+                                  access the
+                                  case-insensitive column. If you forget to enclose a case-sensitive column name
+                                  (identifier),
+                                  your
+                                  program returns a PLS-00302 error that says the identifier is not declared.</p>
+                                <p>You can also use this delimiter to build identifiers that include reserved symbols,
+                                  such
+                                  as
+                                  an
+                                  &#x201C;<code>X+Y</code>&#x201D; identifier.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>+</code></td>
+                              <td valign="top">Math</td>
+                              <td valign="top">
+                                <p>Use the <em>addition operator</em> to add a left and right operand and return a
+                                  result.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>/</code></td>
+                              <td valign="top">Math</td>
+                              <td valign="top">
+                                <p>Use the <em>division operator</em> to divide a left operand by a right operand and
+                                  return
+                                  a
+                                  result.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>**</code></td>
+                              <td valign="top">Math</td>
+                              <td valign="top">
+                                <p>The <em>exponential operator</em> raises a left operand to the power designated by a
+                                  right
+                                  operand.
+                                  This operator is given the highest precedence for math operators in the language. As
+                                  a
+                                  result, a
+                                  fractional exponent must be enclosed in parentheses (also known as expression or list
+                                  delimiters) to
+                                  designate order of operation. Without parentheses, the left operand is raised to the
+                                  power
+                                  of
+                                  the
+                                  numerator and the result divided by the denominator of a fractional exponent.</p>
+                                <p>You raise 3 to the third power and assign the result of 27 to variable a by using
+                                  the
+                                  following
+                                  syntax:</p>
+
+                                <pre><code class="language-sql">
+                                    a := 3**3;
+                                  </code></pre>
+
+                                <p>You raise 8 to the fractional power of 1/3 and assign the result of 2 to variable a
+                                  by
+                                  using
+                                  the
+                                  following syntax:</p>
+
+                                <pre><code class="language-sql">
+                                    a := 8**(1/3);
+                                  </code></pre>
+
+                                <p>The parentheses ensure that the division operation occurs first. Exponential
+                                  operations
+                                  take
+                                  precedence over other mathematical operations without parenthetical grouping.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>*</code></td>
+                              <td valign="top">Math</td>
+                              <td valign="top">
+                                <p>Use the <em>multiplication operator</em> to multiply a left operand by a right
+                                  operand
+                                  and
+                                  return a
+                                  result.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>-</code></td>
+                              <td valign="top">Math</td>
+                              <td valign="top">
+                                <p>Use the <em>subtraction operator</em> to subtract the right operand from the left
+                                  operand
+                                  and return
+                                  a result.</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="top"><code>;</code></td>
+                              <td valign="top">Comparison</td>
+                              <td valign="top">
+                                <p>The <em>statement terminator</em> must be included to close any statement or block
+                                  unit.</p>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+              <p style="clear:both">
+              </p>
+              <p style="font-size:115%;font-weight:bold;font-type:italic;">Anonymous Blocks</p>
+              <p>Here is the basic prototype for an anonymous block PL/SQL program:</p>
+              <pre><code class="language-sql">
+                          [DECLARE]
+  declaration_statements
+BEGIN
+  execution_statements
+[EXCEPTION
+  exception_statements]
+END; /
+                        </code></pre>
+
+              <p>The <code>DECLARE</code> statement starts the optional declaration block. The <code>BEGIN</code>
+                statement
+                ends any declaration block and begins the execution block. The optional <code>EXCEPTION</code>
+                statement
+                may end the execution block; the END statement ends either the execution or optional exception
+                block.</p>
+              <p>Prototypes are great, but they don&#x2019;t show you how to implement the code. You&#x2019;ll now see
+                how to
+                write
+                a
+                simple Hello World anonymous block program in PL/SQL. You can run the command from a file, the
+                SQL*Plus
+                command line, SQL*Developer, or a commercial tool developed for Oracle 11<em>g</em>, such as
+                Quest&#x2019;s
+                Toad.</p>
+              <p>Most programmers use tools, but the command line is the closest environment to what you&#x2019;ll
+                embed
+                in
+                C#,
+                C++, Java, or PHP programs. Anonymous PL/SQL blocks can be embedded in your application code just
+                like
+                SQL
+                statements. Throughout this book, we use display code and code interactions at the command line.</p>
+              <p style="font-size:115%;font-weight:bold;font-type:italic;">Static Anonymous Block</p>
+              <p>Two small details can cause you grief in PL/SQL. The first is that as a strongly blocked language,
+                it
+                requires you to include at least a single statement in each and every block. The second detail is
+                that
+                you&#x2019;ll need to manage output from your PL/SQL programs by enabling a SQL*Plus formatting
+                environment
+                variable <code>SERVEROUTPUT</code>.</p>
+              <p>For example, the following might look like a complete program, but it isn&#x2019;t. It doesn&#x2019;t
+                have
+                at
+                least
+                one
+                statement in the block to make it work:</p>
+
+              <pre><code class="language-sql">
+                          SQL&gt; BEGIN
+  2  END;
+  3  /
+                        </code></pre>
+
+              <p>You might wonder why a forward slash (/) is included on the line below the program unit since
+                there&#x2019;s
+                a
+                semicolon after the END. The semicolon terminates the anonymous block and a forward slash executes
+                the
+                program by sending it to the PL/SQL runtime engine. This program fails with the following error,
+                which
+                basically says it got to the end of the block without finding a single statement:</p>
+
+              <pre><code class="language-markup">
+                          END;
+*
+ERROR at line 2:
+ORA-06550: line 2, column 1:
+PLS-00103: Encountered the symbol &quot;END&quot; when expecting one of the following:
+begin case declare exit for goto if loop mod null pragma
+raise return select update while with <an identifier="">
+<a double-quoted="" delimited-identifier=""> </a><a bind="" variable=""> &lt;&lt;
+close current delete fetch lock insert open rollback
+savepoint set sql execute commit forall merge pipe
+                        </a></an></code></pre>
+
+              <p>The minimal programming unit for an anonymous block includes one statement in the execution block.
+                Conveniently, PL/SQL provides a null statement. You can use null statements in blocks to make sure
+                you
+                have
+                basic block control logic correct before you write detailed block logic. Here&#x2019;s the smallest
+                working
+                anonymous block program.</p>
+
+              <pre><code class="language-sql">
+                          SQL&gt; BEGIN
+  2    NULL;
+  3  END;
+  4  /
+                        </code></pre>
+
+              <p>You&#x2019;ll want to remember this, because if you don&#x2019;t, it can cost you many fruitless hours
+                of
+                debugging.</p>
+              <p>You didn&#x2019;t need the SQL*Plus environment variable <code>SERVEROUTPUT</code> in this basic block
+                test,
+                because nothing was being output from the program. The Hello World program requires that you output
+                a
+                line
+                of text, and that means you must enable <code>SERVEROUTPUT</code> before running your PL/SQL block.</p>
+              <p>If you &#x201C;fat finger&#x201D; something while typing a SQL or PL/SQL statement, you can start over
+                by
+                pressing
+                three
+                keys: enter for a line return, a period, and then enter again to add another line return to abort
+                your
+                active statement.</p>
+              <p>The Hello World program prints text by calling a stored procedure from a standard package in the
+                Oracle
+                database. The <code>DBMS_OUTPUT.PUT_LINE</code> call is more or less similar to echo in scripting
+                languages
+                or the <code>System.out.println()</code> static method call in Java. Moreover, this is PL/SQL&#x2019;s
+                way
+                of
+                sending messages to standard out (<code>STDOUT</code>). Standard out is the output stream of a
+                programming
+                envirnonment and it typically prints text to the console (monitor). You can also redirect standard
+                out
+                to
+                send text to a file.</p>
+              <p>The process of running a <em>Hello World</em> program looks like this:</p>
+
+              <pre><code class="language-sql">
+                          SQL&gt; SET SERVEROUTPUT ON SIZE UNLIMITED
+SQL&gt; BEGIN
+  2    dbms_output.put_line(&apos;Hello World.&apos;);
+  3  END;
+  4  /
+                        </code></pre>
+
+              <p>It prints this:</p>
+
+              <pre><code class="language-markup">
+                          Hello World.
+                        </code></pre>
+
+              <p>Reserved words and keywords in Oracle are case-insensitive. We&#x2019;ve chosen to follow the most
+                common
+                use
+                case for capitalization. This should more-or-less mimic what you&#x2019;d find in any Generic Syntax
+                Highlighter
+                (GeSHi) editor. String literals in PL/SQL are enclosed by single quotes (apostrophes), as they are
+                in
+                SQL.
+                String literals between the quotes are case-sensitive, and you back-quote a single quote with
+                another
+                single quote.</p>
+              <p>This section demonstrates how to handle output, but that&#x2019;s it. The <em>Hello Somebody</em>
+                program
+                in
+                the
+                next section shows you how to handle both input and output from an anonymous program.</p>
+              <p style="font-size:115%;font-weight:bold;font-type:italic;">Dynamic Anonymous Block</p>
+              <p>The Hello Somebody program prints text by calling the same stored procedure from the Hello World
+                program.
+                This section focuses on how input parameters work in PL/SQL anonymous block program units. Input
+                parameters
+                are unknowns before they arrive at any program. This is a crucial fact.</p>
+              <p>You need to plan for both good and bad input parameters. This can be tricky, because a declaration
+                block
+                acts like a header file does in a C or C++ program. Your exception block can&#x2019;t capture runtime
+                errors
+                in
+                the declaration block. The program simply fails with an unhandled exception. In this section,
+                you&#x2019;ll
+                learn
+                how to avoid this forever by always making assignments in the execution block. The trick revolves
+                around
+                your understanding what it means to define a variable versus declare a variable.</p>
+              <p>You define a variable by assigning it a name and data type. You declare a variable by defining it
+                and
+                assigning it a value. In some programming languages, assignment is called initialization. The rule
+                of
+                thumb
+                on whether you call it one or the other depends on the data type. You typically assign values to
+                scalar
+                variables. Scalar variables hold the value of only one thing and are primitives in Java. On the
+                other
+                hand,
+                you initialize object types. The key object types in Oracle are collections and user-defined object
+                types.
+                Object types are also known as composite data types because they can contain multiple things.</p>
+              <p>You assign input parameters to anonymous block programs by using substitution variables. SQL*Plus
+                supports
+                the use of substitution variables, which are prefaced by an ampersand (<code>&amp;</code>), in the
+                interactive
+                and batch console. Substitution variables are variable-length strings or numbers. You should never
+                assign
+                dynamic values in the declaration block.</p>
+              <p>The following program defines a variable, assigns it a value, and prints it:</p>
+
+              <pre><code class="language-sql">
+                          SQL&gt; DECLARE
+  2    lv_whom VARCHAR2(30);
+  3  BEGIN
+  4    lv_whom := &apos;&amp;input&apos;;
+  5    dbms_output.put_line(&apos;Hello &apos;|| lv_whom ||&apos;.&apos;);
+  6  END;
+  7  /
+                        </code></pre>
+
+              <p>You might not notice the single quotes around the substitution variable, but they&#x2019;re critical.
+                When
+                the
+                program is run without a valid string value and no quotes, the engine parses over the null value
+                and
+                excludes the right operand in an assignment. The program would throw a <code>PLS-00103</code>
+                exception
+                because there is no right operand, whereas the engine interprets two single quotes without anything
+                between
+                them as a null string (at least in Oracle this is an implicit assignment of a null value to a
+                string
+                data
+                type).</p>
+              <p>Notice that no example here includes the assignment being made in the declaration block. That
+                would
+                be
+                bad
+                coding practice. By extension, you should avoid assigning actual parameters to local variables in
+                their
+                declaration blocks. Otherwise, your code might fail at runtime because in functions and procedures
+                formal
+                parameters have no size constraints in PL/SQL.</p>
+              <p>Although constants aren&#x2019;t really too useful in anonymous block programs, this is a great place
+                to
+                show
+                you
+                the syntax. The <code>CONSTANT</code> reserved word is placed between the variable name and the
+                data
+                type.
+                You must declare a constant in your declaration block, which means it is both defined and assigned
+                an
+                immutable value.</p>
+              <p>The preceding anonymous block is recycled to include a constant on line 2, as follows:</p>
+
+              <pre><code class="language-sql">
+                          SQL&gt; DECLARE
+  2    lv_hello CONSTANT VARCHAR2(5) := &apos;Hello&apos;;
+  3    lv_whom VARCHAR2(30);
+  4  BEGIN
+  5    lv_whom := &apos;&amp;input&apos;;
+  6    dbms_output.put_line(lv_hello ||&apos; &apos;|| lv_whom ||&apos;.&apos;);
+  7  END;
+  8  /
+                        </code></pre>
+
+              <p>An alternative method for processing interactive session-level variables involves what Oracle
+                calls
+                bind
+                variables. You preface bind variables with a colon (<code>:</code>) inside a PL/SQL block. You can
+                define
+                bind variables in the scope of a SQL*Plus session. In that scope, only the <code>CHAR</code>, <code>CLOB</code>,
+                <code>NCHAR</code>, <code>NCLOB</code>, <code>NUMBER</code>, <code>NVARCHAR2</code>, <code>REFCURSOR</code>,
+                and <code>VARCHAR2</code> data types are available. The term &#x201C;bind variable&#x201D; also applies
+                to
+                the
+                handling
+                of placeholders in Native Dynamic SQL (NDS) and for read-write hooks into the database Private
+                Global
+                Area
+                (PGA). You also use read-write hooks to manage large objects (LOBs) and read hooks to read
+                reference
+                cursors.</p>
+              <p>You can create SQL*Plus session variables by using the <code>VARIABLE</code> keyword. Like the
+                example
+                with substitution variables, you should never assign values to bind variables in the declaration
+                block.</p>
+              <p>The following program defines a session-level bind variable The colon doesn&#x2019;t precede the
+                definition
+                of
+                the variable in the session. You use the colon only inside the PL/SQL program scope. This allows
+                the
+                PL/SQL
+                runtime engine to reach out and access the variable in the SQL*Plus session scope. You use a PL/SQL
+                block
+                to assign a value to the bind variable. Then you can access the bind variable from any subsequent
+                program
+                for the duration of the connected session.</p>
+
+              <pre><code class="language-sql">
+                          SQL&gt; VARIABLE bv VARCHAR2(30)
+SQL&gt; BEGIN
+  2    :bv := &apos;Sam&apos;;
+  3  END;
+  4  /
+                        </code></pre>
+
+              <p>After assigning a value to the session-level bind variable, you can use it as a right operand:</p>
+
+              <pre><code class="language-sql">
+                          SQL&gt; DECLARE
+  2    lv_whom VARCHAR2(30);
+  3  BEGIN
+  4    lv_whom := :bv;
+  5    dbms_output.put_line(&apos;Hello &apos;|| lv_whom ||&apos;.&apos;);
+  6  END;
+  7  /
+                        </code></pre>
+
+              <p>This prints the following:</p>
+
+              <pre><code class="language-markup">
+                          Hello Sam.
+                        </code></pre>
+
+              <p>You could put any of these anonymous block programs in a file and run them from the SQL*Plus
+                command
+                line.</p>
+              <p style="font-size:115%;font-weight:bold;font-type:italic;">Nested Blocks</p>
+              <p>You can put unnamed blocks inside other blocks. These nested blocks can&#x2019;t have names. You could
+                rewrite
+                the preceding example with a nested block like this:</p>
+
+              <pre><code class="language-sql">
+                          SQL&gt; DECLARE
+  2    -- Declare local variables.
+  3    lv_salutation VARCHAR2(5) := &apos;Hello&apos;;
+  4    lv_whom VARCHAR2(30);
+  5  BEGIN
+  6    -- Assign the external bind variable value.
+  7    lv_whom := :bv;
+  8    -- Nested anonymous block.
+  9    DECLARE
+ 10      /* Declare nested local variable, overwriting external
+ 11         local variable in the process. */
+ 12      lv_salutation VARCHAR2(7) := &apos;Goodbye&apos;;
+ 13    BEGIN
+ 14      -- Print message to standard out.
+ 15      dbms_output.put_line(lv_salutation ||&apos; &apos;|| lv_whom ||&apos;.&apos;);
+ 16    END;
+ 17    -- Print message to standard out.
+ 18    dbms_output.put_line(lv_salutation ||&apos; &apos;|| lv_whom ||&apos;.&apos;);
+ 19  END;
+ 20  /
+                        </code></pre>
+
+              <p>Notice that lv_salutation is declared in both the outer and inner anonymous blocks. The physical
+                size
+                of
+                the outer block lv_salutation variable is five characters long, and the value is &#x201C;Hello&#x201D;,
+                whereas
+                the
+                inner
+                block uses a physical size of seven characters and a value of &#x201C;Goodbye&#x201D;. The second
+                declaration
+                replaces
+                both the size and value, which lasts for the duration of the nested block. You can see this because
+                both
+                messages are printed to standard out with the dbms_output.put_line procedure.<br>
+                Here&#x2019;s the output:</p>
+
+              <pre><code class="language-markup">
+                          Goodbye Sam.
+Hello Sam.
+                        </code></pre>
+
+              <p>Although the two local variables share the same name, they share different physical sizes and
+                values.
+                This
+                example demonstrates scope and the ability of subordinate blocks to override existing variable data
+                types
+                and contents.</p>
+              <p>You can also nest named blocks inside other named blocks or anonymous blocks. I&#x2019;ve included
+                this
+                later
+                in
+                the formal discussion of functions and procedures to illustrate the nesting of local functions and
+                procedures in anonymous blocks. The forward reference to hector in the jack procedure lets you see
+                the
+                concept of forward-referencing stubs.</p>
+              <p>The problem with nested named blocks, however, is they&#x2019;re not published blocks. This means that
+                one
+                might
+                call another before the one being called is defined. This type of design problem is known as a
+                scope
+                error.
+                The scope of the called program is unknown until after the call is made. It raises a <code>PLS-00313</code>
+                exception and results in a compile-time error.</p>
+
+              <pre><code class="language-sql">
+                          SQL&gt; DECLARE
+  2    PROCEDURE jack IS
+  3    BEGIN
+  4      dbms_output.put_line(hector||&apos; World!&apos;);
+  5    END jack;
+  6    FUNCTION hector RETURN VARCHAR2 IS
+  7    BEGIN
+  8      RETURN &apos;Hello&apos;;
+  9    END hector;
+ 10  BEGIN
+ 11    jack;
+ 12  END;
+ 13  /
+                        </code></pre>
+
+              <p>Lines 2 through 5 define a local procedure, jack. Inside procedure jack is a call on line 4 to the
+                function hector. The function isn&#x2019;t defined at this point in the anonymous block, and it raises
+                an
+                out-of-scope error:</p>
+
+              <pre><code class="language-markup">
+                              dbms_output.put_line(hector||&apos; World!&apos;);
+                         *
+ERROR at line 4:
+ORA-06550: line 4, column 26:
+PLS-00313: &apos;B&apos; not declared in this scope
+ORA-06550: line 4, column 5:
+PL/SQL: Statement ignored
+                        </code></pre>
+
+              <p>This is a compile-time error, because all anonymous block programs are parsed before they&#x2019;re
+                executed.
+                Parsing is a compile-time process. Parsing recognizes identifiers, which are reserved words,
+                predefined
+                identifiers, quoted identifiers, user-defined variables, subroutines, or UDTs. Named blocks are
+                identifiers. Function hector isn&#x2019;t recognized as an identifier, because PL/SQL reads identifiers
+                into
+                memory from top to bottom. This is a single-pass parsing process. Under a single-pass parser,
+                function
+                hector isn&#x2019;t defined before it&#x2019;s called in procedure jack.</p>
+              <p>You can fix this by using forward references. A forward reference to a function or procedure
+                requires
+                only
+                the signature of the function or procedure rather than the signature and implementation. Forward
+                references
+                are equivalent to the concept of an interface in Java. These prototypes are stubs in PL/SQL. The
+                stub
+                lets
+                the compilation accept the identifier name of a named block before you implement the block.</p>
+              <p>The following provides forward references for all local functions and procedures. I recommend that
+                you
+                always provide these stubs in your programs when you implement local scope named blocks.</p>
+
+              <pre><code class="language-sql">
+                          SQL&gt; DECLARE
+  2    PROCEDURE jack;
+  3    FUNCTION hector RETURN VARCHAR2;
+  4    PROCEDURE jack IS
+  5    BEGIN
+  6      dbms_output.put_line(b||&apos; World!&apos;);
+  7    END jack;
+  8    FUNCTION hector RETURN VARCHAR2 IS
+  9    BEGIN
+ 10      RETURN &apos;Hello&apos;;
+ 11    END hector;
+ 12  BEGIN
+ 13    jack;
+ 14  END;
+ 15  /
+                        </code></pre>
+
+              <p>Lines 2 and 3 provide the stubs to procedure jack and function hector. This program passes the
+                compile
+                time validation because it&#x2019;s able to resolve all symbols from top to bottom of the anonymous
+                block.
+                Nested
+                blocks are very useful, but you need to use them correctly.</p>
+              <p>The biggest risk of locally named PL/SQL blocks is that they replace schema-level named functions
+                and
+                procedures. To avoid this, you should consider a naming convention (like an <code>lv_</code>
+                preface)
+                for
+                locally named blocks that ensures they won&#x2019;t replace schema-level names in your stored programs.</p>
+              <p style="clear:both">
+              </p>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div title="Click to see the instructions ..." class="collapsible-header">Named Blocks
+            <i class="material-icons left">keyboard_arrow_right</i>
+          </div>
+          <div class="collapsible-body">
+            <h4>Named Blocks</h4>
+            <p>Functions and procedures are the named blocks in PL/SQL. They can be deployed inside anonymous or
+              other
+              named
+              block programs, inside UDTs, or in packages. Functions return a value and can be called from SQL DML
+              statements, consumed as call parameters to other functions and procedures, and used to produce values
+              as
+              right
+              operands in assignments.</p>
+            <div style="margin-left:0px">
+              <p style="clear:both">
+              </p>
+              <p>Functions and procedures can accept parameters of scalar, composite, and collection data types.
+                Scalar
+                data types are SQL-based data types, and you can use them in SQL and PL/SQL contexts.</p>
+              <p>Composite data types can be defined as PL/SQL record types or as SQL object types, and varray and
+                nested
+                table collections can use either. Associative arrays can use only SQL scalar data types and PL/SQL
+                record
+                data types.</p>
+              <p>The following table shows you how you can use these composite data types as parameters in
+                functions
+                or
+                procedures, and when and where you can use them as return data types in functions. The most notable
+                issue
+                raised by this distinction is that PL/SQL has two different deployment strategies: One involves
+                writing
+                programs to support other PL/SQL programs, and the other involves writing programs to support SQL.</p>
+              <div>
+                <p></p>
+                <p>
+                  <!---------------------------------------->
+                </p>
+                <p>
+                  <!---------------------------------------->
+                </p>
+                <p>
+                  <!---------------------------------------->
+                </p>
+                <p>
+                  <!---------------------------------------->
+                </p>
+                <p>
+                  <!---------------------------------------->
+                </p>
+                <p>
+                  <!---------------------------------------->
+                </p>
+                <p>
+                  <!----------------------------------------><br>
+                </p>
+                <table class="table_lexical">
+                  <!---------------------------------------->
+
+                  <tbody>
+                    <tr class="table_row">
+                      <th class="lexical_type" width="400">Collection<br>Data Type</th>
+                      <th class="lexical_symbol">Scope</th>
+                      <th class="lexical_type">SQL Call<br>Parameter</th>
+                      <th class="lexical_type">PL/SQL Call<br>Parameter</th>
+                      <th class="lexical_type">SQL Function<br>Return</th>
+                      <th class="lexical_type">PL/SQL Function<br>Return</th>
+                    </tr>
+
+                    <tr>
+                      <td class="lexical_type"><code>VARRAY</code></td>
+                      <td class="lexical_symbol">SQL</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">Yes
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="lexical_type">Nested Table</td>
+                      <td class="lexical_symbol">SQL</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">Yes
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="lexical_type">Aggregate Table</td>
+                      <td class="lexical_symbol">SQL</td>
+                      <td class="lexical_type">&#xA0;</td>
+                      <td class="lexical_type">&#xA0;</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">&#xA0;
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="lexical_type"><code>VARRAY</code></td>
+                      <td class="lexical_symbol">PL/SQL</td>
+                      <td class="lexical_type">&#xA0;</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">&#xA0;</td>
+                      <td class="lexical_type">Yes
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="lexical_type">Nested Table</td>
+                      <td class="lexical_symbol">PL/SQL</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">Yes
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="lexical_type"><code>VARRAY</code></td>
+                      <td class="lexical_symbol">PL/SQL</td>
+                      <td class="lexical_type">&#xA0;</td>
+                      <td class="lexical_type">Yes</td>
+                      <td class="lexical_type">&#xA0;</td>
+                      <td class="lexical_type">Yes
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p style="clear:both">
+              </p>
+              <p>The following sections address function and procedure architecture and development.</p>
+              <p style="font-size:115%;font-weight:bold;">Function Architecture</p>
+              <p>Before you see the details of how you implement and use functions, you should first understand what
+                a
+                function is and how it works. Functions are black boxes, production facilities in which you add raw
+                things
+                and take processed things out.</p>
+              <p>The two major function architectures, pass-by-value and pass-by-reference models, are used in
+                different
+                ways. You choose the former when you want a standalone behavior and the latter when functions act as
+                subroutines inside the transaction scope of another program unit.</p>
+              <p style="font-size:105%;font-weight:bold;">Pass-by-Value Functions</p>
+              <p>A pass-by-value function receives values when they&#x2019;re called. The functions returns a single
+                thing
+                upon
+                completion. The tricky parts with this type of function are the data types of the inputs and outputs.
+                Inputs
+                are formal parameters and have only one mode in pass-by-value programs, and that&#x2019;s an IN-only
+                mode.
+                An
+                IN-only mode means that you send a copy of either a variable value or a literal value into the
+                function
+                as a
+                raw input. These copies are actual parameters or call parameters. All raw materials (call parameters)
+                are
+                consumed during the production of the finished goods&#x2014;or the return value of this type of
+                function.
+                The
+                return
+                type value of the function must be assigned to a variable in a PL/SQL block, but it can also be
+                returned
+                as
+                an expression in a SQL query.</p>
+              <p>The following illustration depicts how a pass-by-value function works. What&#x2019;s hidden in this
+                context?
+                The
+                hidden element of a stored program in an Oracle database is the back door that lets a function
+                transact
+                against the database. This means a function&#x2019;s black box can contain an INSERT, UPDATE, or DELETE
+                statement.
+                Actually, it can contain a set of statements. The collection of statements can collectively be a
+                transaction.
+                This back door to a transactional database is available only when you use the function in an
+                exclusively
+                PL/SQL scope.</p>
+              <p>
+                <!---------- Insert image. ---------->
+              </p>
+              <p>The following shows you how to write a pass-by-value function that is deterministic, which means it
+                doesn&#x2019;t have a dependence on any data in the database:</p>
+
+              <pre><code class="language-sql">
+                      SQL&gt; CREATE OR REPLACE FUNCTION pv
+  2  ( future_value    NUMBER
+  3  , periods         NUMBER
+  4  , interest NUMBER )
+  5  RETURN NUMBER DETERMINISTIC IS
+  6  BEGIN
+  7    RETURN future_value / ((1 + interest/100)**periods);
+  8  END pv;
+  9  /
+                    </code></pre>
+
+              <p style="font-size:105%;font-weight:bold;">Pass-by-Reference Functions</p>
+              <p>When you call a pass-by-reference function, you send one or more references to local variables as
+                actual
+                parameters. Formal parameters, therefore, can have any one of three possible modes: <code>IN</code>,
+                <code>OUT</code>,
+                and <code>IN OUT</code>.</p>
+              <p>The following list describes the three modes of subroutine parameters:</p>
+              <ul>
+                <li><strong><code>IN</code></strong> The <code>IN</code> mode, the default mode, means you send a
+                  copy
+                  as
+                  the
+                  actual parameter. Any formal parameter defined without an explicit mode of operation is implicitly
+                  an
+                  <code>IN</code>&#x2013;
+                  only mode parameter. It means a formal parameter is read-only. When you set a formal parameter as
+                  read-only, you can&#x2019;t alter it during the execution of the subroutine. You can assign a default
+                  value
+                  to
+                  a
+                  parameter, making the parameter optional. You use the <code>IN</code> mode for all formal
+                  parameters
+                  when
+                  you want to define a pass-by-value subroutine.</li>
+                <li><strong><code>OUT</code></strong> The <code>OUT</code> mode means you send a reference, but a
+                  null
+                  as
+                  an
+                  initial value. An <code>OUT</code> mode formal parameter is write-only. When you set a formal
+                  parameter
+                  as
+                  write-only, no initial physical size is allocated to the variable. You allocate the physical size
+                  and
+                  value
+                  inside your subroutine. You can&#x2019;t assign a default value, which would make an OUT mode formal
+                  parameter
+                  optional. If you attempt that, you raise a <code>PLS-00230</code> error. The error says that an
+                  <code>OUT</code>
+                  or <code>IN</code> <code>OUT</code> mode variable cannot have a default value. Likewise, you cannot
+                  pass a
+                  literal as an actual parameter to an <code>OUT</code> mode variable, because that would block
+                  writing
+                  the
+                  output variable. If you attempt to send a literal, you&#x2019;ll raise an <code>ORA-06577</code>
+                  error
+                  with
+                  a
+                  call
+                  from SQL*Plus, and a <code>PLS-00363</code> error inside a PL/SQL block. The SQL*Plus error message
+                  states
+                  the output parameter is not a bind variable, which is a SQL*Plus session variable. The PL/SQL error
+                  tells
+                  you that the expression (or, more clearly, literal) cannot be an assignment target. You use an
+                  <code>OUT</code>
+                  mode with one or more formal parameters when you want a write-only pass-by-reference subroutine.</li>
+                <li><strong><code>IN OUT</code></strong> The <code>IN OUT</code> mode means you send a reference and
+                  starting
+                  value. A formal parameter is read-write. When you set a formal parameter as read-write, the
+                  physical
+                  size
+                  of the actual parameter is provided. While you can change the contents of the variable inside the
+                  subroutine, you can&#x2019;t change or exceed the actual parameter&#x2019;s allocated size. The <code>IN
+                    OUT</code>
+                  mode
+                  restrictions on default values and literal values mirror those of the <code>OUT</code> mode.</li>
+              </ul>
+              <p>Although you can call a pass-by-reference function by using session-level variables, that&#x2019;s
+                really
+                not
+                the
+                functions&#x2019; role. Pass-by-reference functions belong as components in the scope of either
+                pass-by-value
+                functions or stored procedures. The next illustration shows the generalized format of
+                pass-by-reference
+                functions.</p>
+              <p>
+                <!---------- Insert image. ---------->
+              </p>
+              <p>Interestingly, raw materials (call parameters) aren&#x2019;t fully consumed in pass-by-reference
+                functions,
+                as
+                they
+                are in pass-by-value functions. While <code>IN</code>-only mode parameters are fully consumed, <code>IN
+                  OUT</code>
+                mode variables are returned generally in an altered state. <code>OUT</code> mode variables are the
+                result
+                of
+                some processing inside the black box that you opt not to return through the function&#x2019;s formal
+                return
+                type.</p>
+              <p>Pass-by-reference functions can exhibit many of the behaviors we&#x2019;ve worked through earlier in
+                the
+                chapter.
+                As discussed, they can have <code>IN</code>, <code>IN OUT</code>, or <code>OUT</code> mode
+                parameters.
+                An
+                <code>IN</code> mode parameter passes in a value that can change but is consumed wholly. An <code>IN
+                  OUT</code>
+                mode parameter passes in a reference and value, and the value can change before it is returned to the
+                calling
+                program. An <code>OUT</code> mode parameter passes in nothing but can return something.</p>
+              <p>A simple example of this concept is the following program. It takes only one input parameter and one
+                input
+                and output parameter. The input and output parameter increments each time you call the program.</p>
+
+              <pre><code class="language-sql">
+                      SQL&gt; CREATE OR REPLACE FUNCTION adding
+  2  ( a IN     NUMBER
+  3  , b IN OUT NUMBER ) RETURN NUMBER IS
+  4  BEGIN
+  5    b := b + 1;
+  6  RETURN a + b;
+  7  END;
+  8  /
+                    </code></pre>
+
+              <p>We&#x2019;ll use bind variables to keep this as simple as possible to illustrate the approach. You
+                have to
+                define
+                them in the session, and then assign values to bind variables inside a PL/SQL block, like this:</p>
+
+              <pre><code class="language-sql">
+                      SQL&gt; VARIABLE one NUMBER
+SQL&gt; VARIABLE two NUMBER
+SQL&gt; BEGIN
+  2    :one := 1;
+  3    :two := 0;
+  4  END;
+  5  /
+                    </code></pre>
+
+              <p>We&#x2019;ll also need an output variable, like this one:</p>
+
+              <pre><code class="language-sql">
+                      SQL&gt; VARIABLE output NUMBER
+                    </code></pre>
+
+              <p>Now we can call the pass-by-reference function with the bind variables:</p>
+
+              <pre><code class="language-sql">
+                      SQL&gt; VARIABLE output NUMBER
+SQL&gt; CALL adding(:one,:two) INTO :output;
+SQL&gt; CALL adding(:one,:two) INTO :output;
+                    </code></pre>
+
+              <p>We can then query the two bind variables, like this:</p>
+
+              <pre><code class="language-sql">
+                      SQL&gt; SELECT :one, :two FROM dual;
+                    </code></pre>
+
+              <p>The query prints this:</p>
+
+              <pre><code class="language-sql">
+                            :ONE       :TWO
+---------- ----------
+         1          2
+                    </code></pre>
+
+              <p>After two calls, the input-only variable is the same, but the input and output variable has grown by
+                two.
+                That would continue as long as we call it. The most useful way to use pass-by-reference functions is
+                when
+                you
+                want to ensure that something happens and returns the changed values.</p>
+              <p style="font-size:115%;font-weight:bold;">Procedure Architecture</p>
+              <p>A procedure is essentially a function with a void return type. As such, you can&#x2019;t use it as a
+                right
+                operand
+                because it doesn&#x2019;t have a return value. Procedures, like functions, are black boxes.</p>
+              <p>Procedures provide a named subroutine that you call within the scope of a PL/SQL block. Although the
+                behavior differs slightly whether you pass call parameters by value or reference, the inputs and
+                outcomes
+                are
+                the only way to exchange values between the calling block and the procedure.</p>
+              <p>The nature of the call parameters provides you with two procedure architectures. They are a
+                pass-by-value or
+                pass-by-reference model. A pass-by-value model accepts values to perform a task, while a
+                pass-by-value
+                model
+                accepts values or references to perform a task. Reference variable values can change inside a
+                procedure
+                like
+                this, and can return altered values to the external variable references. You chose a pass-by-value
+                model
+                when
+                you want a delegation behavior, and a pass-by-reference model when you want a shared or cooperative
+                processing behavior.</p>
+              <p>In a delegation behavior, the inputs are consumed by the subroutine and nothing is returned to the
+                calling
+                scope. Shared or cooperative processing means that a subroutine performs an operation on one or more
+                calling
+                scope variables. Cooperative processing doesn&#x2019;t consume all inputs but refines some of them. It
+                acts
+                like
+                an
+                oil refinery that processes crude oil, additives, and chemicals into fuel.</p>
+              <p style="font-size:105%;font-weight:bold;">Pass-by-Value Procedures</p>
+              <p>A pass-by-value procedure receives values when they&#x2019;re called. They return nothing tangible to
+                the
+                calling
+                scope block, but they can interact with the database. Pass-by-value procedures implement a delegation
+                model.
+                Procedures are often used to group and control a series of DML statements in the scope of a single
+                transaction.</p>
+              <p>The mode of all formal parameters is IN-only for pass-by-value procedures. This means they receive a
+                copy of
+                an external variable or a numeric or string literal when you call the procedure. Call parameters
+                can&#x2019;t
+                be
+                changed during the execution of a subroutine. You can transfer the contents from a call parameter to
+                a
+                local
+                variable inside the procedure and then update that the local variable.</p>
+              <p>The following illustration depicts how a pass-by-value procedure works. What&#x2019;s hidden in this
+                context?
+                The
+                hidden element of any stored program is that it can change data in the database. This means a
+                procedure&#x2019;s
+                black box can contain an <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement.
+                As
+                mentioned, a procedure often contains one or more DML statements. These procedures frequently define
+                a
+                single
+                transaction, which means all or nothing occurs.</p>
+              <p>
+                <!---------- Insert image. ---------->
+              </p>
+              <p>A basic pass-by-value procedure simply takes a call parameter and performs some action with it. That
+                action
+                consumes the copy, because at the conclusion of the procedure the values no longer exist. It is
+                possible
+                that
+                they were printed or that they were inserted or updated into database tables. They might also have
+                simply
+                filtered <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statements.</p>
+              <p>Here&#x2019;s a small example pass-by-value program that works in the same transaction scope as the
+                calling
+                program. It takes only one parameter, which uses the default IN-only mode.</p>
+
+              <pre><code class="language-sql">
+                      SQL&gt; CREATE OR REPLACE PROCEDURE print_hello
+  2  ( pv_whom VARCHAR2 ) IS
+  3  BEGIN
+  4    dbms_output.put_line(&apos;Hello &apos;||pv_whom||&apos;!&apos;);
+  5  END;
+  6  /
+                    </code></pre>
+
+              <p>We can see the output by setting a SQL*Plus environment variable and printing it:</p>
+
+              <pre><code class="language-sql">
+                      SQL&gt; SET SERVEROUTPUT ON SIZE 1000000
+SQL&gt; EXECUTE print_hello(&apos;there&apos;);
+Hello there!
+                    </code></pre>
+
+              <p>This section has shown you how to create a pass-by-value procedure.</p>
+              <p style="font-size:105%;font-weight:bold;">Pass-by-Reference Procedures</p>
+              <p>You send one or more references to local variables as actual parameters when you call a
+                pass-by-reference
+                function. Therefore, formal parameters can have an <code>IN</code> (the default), <code>IN OUT</code>,
+                or
+                <code>OUT</code> mode. These modes were described earlier in the chapter.</p>
+              <p>Although you can call a pass-by-reference function by using session-level variables, that&#x2019;s
+                really
+                not
+                their
+                role. Pass-by-reference functions belong as components inside other anonymous or named blocks. The
+                next
+                illustration shows you the generalized format of pass-by-reference functions.</p>
+              <p>
+                <!---------- Insert image. ---------->
+              </p>
+              <p><code>IN OUT</code> call parameters aren&#x2019;t fully consumed by pass-by-reference procedures.
+                Although
+                <code>IN</code>-only
+                mode parameters are fully consumed, <code>OUT</code> mode variables don&#x2019;t have a value to
+                consume.
+                <code>IN
+                  OUT</code> mode variables are designed to submit a reference with a value and receive a replacement
+                value
+                at the conclusion of a subroutine, like a procedure.</p>
+              <p><code>OUT</code> mode variables are the result of some processing inside the black box. They are
+                generally
+                derived by some algorithm that uses other call parameters and constant values inside the procedure.
+                Sometimes
+                <code>OUT</code> mode variables perform similar roles to a function&#x2019;s formal return type.</p>
+              <p>The following demonstrates a pass-by-reference procedure that mimics the behavior of the preceding
+                nested
+                anonymous block program:</p>
+
+              <pre><code class="language-sql">
+                      SQL&gt; CREATE OR REPLACE PROCEDURE change_string
+  2  ( pv_string IN OUT VARCHAR2 ) IS
+  3  BEGIN
+  4    pv_string := &apos;We&apos;&apos;re inside the procedure.&apos;;
+  5  END;
+  6  /
+                    </code></pre>
+
+              <p>The procedure has only one formal parameter and its mode is <code>IN OUT</code>, which means it is
+                passed by
+                reference. Line 4 in the stored procedure performs the same feature as line 5 in the nested anonymous
+                block.</p>
+              <p>After you declare a local SQL*Plus bind variable, you can call the stored procedure as follows:</p>
+
+              <pre><code class="language-sql">
+                      SQL&gt; VARIABLE no_real_value VARCHAR2(50)
+SQL&gt; EXECUTE change_string(:no_real_value);
+                    </code></pre>
+
+              <p style="clear:both">
+              </p>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div title="Click to see the instructions ..." class="collapsible-header">Variables
+            <i class="material-icons left">keyboard_arrow_right</i>
+          </div>
+          <div class="collapsible-body">
+            <h4>Variables</h4>
+            <p>PL/SQL supports many more data types than Oracle&#x2019;s SQL dialect does. These variables can be
+              classified
+              into
+              two
+              main groups: scalar and composite.</p>
+            <div style="margin-left:0px">
+              <p style="clear:both">
+              </p>
+              <p>A scalar variable contains one and only one thing. In Java, primitives are scalar variables.
+                Characters,
+                integers, and various number data types are scalar variables in most programming languages. Strings
+                are
+                also
+                scalar variables in the context of relational databases.</p>
+              <p>A composite variable contains more than one scalar or other composite variable in some type of
+                data
+                structure. Structures can be arrays, reference cursors, and user-defined types such as arrays,
+                records,
+                or
+                objects.</p>
+              <p>Some data types are unconstrained, but others are constrained. Constrained data types derive
+                specialized
+                behavior from their generalized or unconstrained data type. For example, a user-defined data type
+                of
+                positive
+                integers is a specialization of an integer data type. An unconstrained data type doesn&#x2019;t place
+                artificial
+                limits on the range of a data type.</p>
+              <p>The program examples presented here demonstrate the assignment of string or numeric literal values
+                to
+                three
+                base data types. Date, timestamp, or interval data types use the <code>TO_CHAR</code> or <code>CAST</code>
+                built-in function to convert string literal values into valid dates or timestamps. Likewise,
+                you&#x2019;ll
+                need to
+                convert them back to strings to print them with the print_line procedure of the dbms_output
+                package.
+                After
+                we
+                show you how to work with the base data types, we&#x2019;ll show you how to work with composite data
+                types.</p>
+              <p>PL/SQL lets you explicitly or implicitly define data types. Implicit definitions rely on anchoring
+                them to
+                a
+                table or column definition. You anchor data types to catalog objects with pseudo columns or a
+                table.
+                A
+                <code>%TYPE</code>
+                is a pseudo column that lets you anchor a data type to the definition of a column in a table.</p>
+              <p>Alternatively, a <code>%ROWTYPE</code> lets you anchor a record type to the definition of a table
+                or
+                view
+                in
+                the database catalog, or to a <code>CURSOR</code> structure in your PL/SQL block.</p>
+              <p style="font-size:125%;font-weight:bold;">Text Data Types</p>
+              <p>There are several text data types. You probably use variable-length strings more frequently than
+                the
+                others,
+                because they meet most needs. You can put 4000-byte text into the <code>VARCHAR</code>, <code>VARCHAR2</code>,
+                and <code>NVARCHAR2</code> data types in SQL, or dependent on the configuration of the database
+                32,767
+                bytes
+                in the same data types. However, you should put larger text entries in the <code>CLOB</code> data
+                type.</p>
+              <p>You have an alternative to variable-length data types in the <code>CHAR</code>, <code>NCHAR</code>,
+                and
+                <code>CHARACTER</code> data types. You use them when you want to allocate a fixed-size string. In
+                most
+                cases,
+                you forfeit space for little if any tangible benefit. A perfect use case for a <code>CHAR</code>
+                data
+                type
+                is
+                a column that contains the two-character codes for U.S. states, because it won&#x2019;t allocate space
+                unnecessarily.</p>
+              <p>You assign literal values to variable or fixed-length data types the same way. In fact, you make
+                assignments
+                to a <code>CLOB</code> the same way when the string could really fit in an ordinary text data type.
+                Entries
+                longer than 32,767 bytes require the DBMS_LOB package.</p>
+              <p>This sample program shows you the assignment and subsequent space allocation for both variable and
+                fixed-length data types:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_fixed     CHAR(40)    := &apos;Something not quite long.&apos;;
+  3    lv_variable  VARCHAR(40) := &apos;Something not quite long.&apos;;
+  4    lv_clob      CLOB        := &apos;Something not quite long.&apos;;
+  5  BEGIN
+  6    dbms_output.put_line(&apos;Fixed Length   [&apos;||LENGTH(lv_fixed)||&apos;]&apos;);
+  7    dbms_output.put_line(&apos;Varying Length [&apos;||LENGTH(lv_variable)||&apos;]&apos;);
+  8    dbms_output.put_line(&apos;CLOB Length [&apos;||LENGTH(lv_clob)||&apos;]&apos;);
+  9  END;
+ 10  /
+                      </code></pre>
+
+              <p>This program prints the space allocation sizes:</p>
+
+              <pre><code class="language-markup">
+                        Fixed Length   [40]
+Varying Length [25]
+CLOB Length    [25]
+                      </code></pre>
+
+              <p>The <code>LONG</code> and <code>LONG RAW</code> data types are provided only for backward
+                compatibility.
+                You
+                should not use them. <code>CLOB</code> data types are the replacements for the soon to be
+                deprecated
+                <code>LONG</code>
+                and <code>LONG RAW</code> data types. </p>
+              <p style="font-size:125%;font-weight:bold;">Date Data Types</p>
+              <p>Dates are always complex in programming languages. The <code>DATE</code> data type is the base
+                type
+                for
+                dates, times, and intervals. The following discussion shows you how to use dates. As previously
+                discussed,
+                Oracle has two default date masks, and they support implicit casting to <code>DATE</code> data
+                types.
+                They
+                are a two-digit day, three-character month, two-digit year (<code>DD-MON-RR</code>); and a two-
+                digit
+                day,
+                three-character month, four-digit year (<code>DD-MON-YYYY</code>). Any other string literal
+                requires
+                an
+                overriding format mask with the <code>TO_DATE</code> built-in SQL function.</p>
+              <p>The next example shows you how to assign variables with implicit and explicit casting from
+                conforming
+                and
+                nonconforming strings. Nonconforming strings rely on formatting masks.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_date_1  DATE  := &apos;28-APR-75&apos;;
+  3    lv_date_2  DATE  := &apos;29-APR-1975&apos;;
+  4    lv_date_3  DATE  := TO_DATE(&apos;19750430&apos;,&apos;YYYYMMDD&apos;);
+  5  BEGIN
+  6    dbms_output.put_line(&apos;Implicit [&apos;||lv_date_1||&apos;]&apos;);
+  7    dbms_output.put_line(&apos;Implicit [&apos;||lv_date_2||&apos;]&apos;);
+  8    dbms_output.put_line(&apos;Explicit [&apos;||lv_date_3||&apos;]&apos;);
+  9  END;
+ 10  /
+                      </code></pre>
+
+              <p>This program prints the following:</p>
+
+              <pre><code class="language-markup">
+                        Implicit [28-APR-75]
+Implicit [29-APR-75]
+Explicit [30-APR-75]
+                      </code></pre>
+
+              <p>When you want to see the four-digit year, you use the TO_CHAR built-in function with the
+                appropriate
+                format
+                mask. Dates work differently in Oracle than they do in MySQL, but they work in PL/SQL as they do in
+                SQL.
+                Check back to the full discussion in Chapter 11. You can add a day simply by adding an integer to a
+                date
+                variable, as shown in the following program:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_date  DATE  := &apos;12-MAY-1975&apos;;
+  3  BEGIN
+  4    lv_date := lv_date + 3;
+  5    dbms_output.put_line(&apos;Date [&apos;||lv_date||&apos;]&apos;);
+  6  END;
+  7  /
+                      </code></pre>
+
+              <p>This prints a date three days after the original date:</p>
+
+              <pre><code class="language-markup">
+                        15-May-75
+                      </code></pre>
+
+              <p>You can also work with parts of a day, because dates are really scalar numbers. The integer value
+                sets
+                the
+                date and any fractional value sets the hours, minutes, and seconds. You use the <code>TRUNC</code>
+                built-in
+                function to round down a date to the base date or integer value. This is important<br>
+                when you want to perform interval calculations about the number of elapsed days.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_date_1  DATE  := SYSDATE;
+  3    lv_date_2  DATE  := lv_date_1;
+  4  BEGIN
+  5    dbms_output.put_line(TO_CHAR(lv_date_1,&apos;DD-MON-YY HH24:MI:SS&apos;));
+  6    dbms_output.put_line(TO_CHAR(TRUNC(lv_date_2),&apos;DD-MON-YY HH24:MI:SS&apos;));
+  7  END;
+  8  /
+                      </code></pre>
+
+              <p>This example prints this:</p>
+
+              <pre><code class="language-markup">
+                        30-APR-09 00:04:13
+30-APR-09 00:00:00
+                      </code></pre>
+
+              <p>As you can see from the results, the <code>TRUNC</code> built-in function reduces the scalar date
+                to
+                a
+                whole
+                integer. With the <code>TRUNC</code> command, you are able to calculate the number of days between
+                two
+                dates.</p>
+              <p style="font-size:125%;font-weight:bold;">Numeric Data Types</p>
+              <p>Numbers are straightforward in PL/SQL. You assign integer and complex numbers the same way to all
+                but
+                the
+                new IEEE 754-format data types.</p>
+              <p>The basic number data type is <code>NUMBER</code>. You can define a variable as an unconstrained
+                or
+                constrained <code>NUMBER</code> data type by qualifying the precision or scale. Precision
+                constraints
+                prevent
+                the assignment of larger precision numbers to target variables. Scale limitations shave off part of
+                the
+                decimal value but allow assignment with a loss of value.</p>
+              <p>The following example demonstrates what happens when you assign a larger precision <code>NUMBER</code>
+                data
+                type value to a variable with a smaller precision. The first number between the opening parenthesis
+                and
+                comma
+                defines the precision, or total number of digits, to the left and right of the decimal point. The
+                second
+                number between the comma and the closing parenthesis defines the scale, or total number of digits,
+                to
+                the
+                right of the decimal point.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_number1 NUMBER(6,2);
+  3    lv_number2 NUMBER(15,2) := 21533.22;
+  4  BEGIN
+  5    lv_number1 := lv_number2;
+  6    dbms_output.put_line(lv_number1);
+  7  END;
+  8  /
+                      </code></pre>
+
+              <p>The assignment on line 5 throws the following exception:</p>
+
+              <pre><code class="language-markup">
+                        DECLARE
+*
+ERROR at line 1:
+ORA-06502: PL/SQL: numeric or value error: number precision too large
+ORA-06512: at line 5
+                      </code></pre>
+
+              <p>The error is thrown because the physical digits of the <code>NUMBER(6,2)</code> data type can&#x2019;t
+                hold
+                all
+                the
+                digits from the source variable. To eliminate the error, you need to change the precision value
+                from
+                6
+                to
+                7.
+                That allows the entire number to fit in the data type.</p>
+              <p>The next example leaves the precision at 6 but changes the decimal scale to 1. As mentioned, this
+                change
+                lets the assignment work. Unfortunately, you lose the precision of the hundredth decimal value by
+                shaving
+                it
+                off.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_number1 NUMBER(6,1);
+  3    lv_number2 NUMBER(15,2) := 21533.22;
+  4  BEGIN
+  5    lv_number1 := lv_number2;
+  6    dbms_output.put_line(lv_number1);
+  7  END;
+  8  /
+                      </code></pre>
+
+              <p>Here&#x2019;s how the value in lv_number1 after the assignment prints: 21533.2<br>
+                You lose the entire decimal value when you assign a <code>NUMBER</code> data type with a decimal to
+                any
+                of
+                the integer data types. Unlike Java and most other procedural programming languages, PL/SQL
+                doesn&#x2019;t
+                require
+                you to acknowledge this loss of precision by making the assignment explicit.</p>
+              <p>You can see the implicit casting of a <code>NUMBER</code> data type to an <code>INTEGER</code>
+                data
+                type
+                in
+                the following code:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_number1 INTEGER;
+  3    lv_number2 NUMBER(15,2) := 21533.22;
+  4  BEGIN
+  5    lv_number1 := lv_number2;
+  6    dbms_output.put_line(lv_number1);
+  7  END;
+  8  /
+                      </code></pre>
+
+              <p>The program would print this:</p>
+
+              <pre><code class="language-markup">
+                        21533
+                      </code></pre>
+
+              <p>Likewise, you could perform the same task on line 5 by using the <code>FLOOR</code> function
+                before
+                making
+                the assignment between two variables (that use the <code>NUMBER</code> data type), like so:</p>
+
+              <pre><code class="language-sql">
+                          5 lv_number1 := FLOOR(lv_number2);
+                      </code></pre>
+
+              <p>The <code>FLOOR</code> function effectively rounds down to the nearest integer value. It shows you
+                explicitly how to shave off a decimal value.</p>
+              <p>You should avoid mixing and matching numeric data types to avoid the loss of mathematical value in
+                your
+                data. When you must mix numeric data types, you can prevent the loss of mathematical value during
+                assignments
+                by disallowing such assignments or qualifying in comments that you don&#x2019;t care about the loss of
+                information.
+                The latter is a valid approach when you&#x2019;re reporting in hundreds, thousands, and millions,
+                provided
+                you
+                do
+                the sum first before discarding the sum&#x2019;s decimal value.</p>
+              <p>The new IEEE 754-format data types are single-precision and double-precision numbers. Their design
+                supports
+                scientific computing. The <code>BINARY_FLOAT</code> is a 32-bit floating point number, and the
+                <code>BINARY_DOUBLE</code>
+                is a 64-bit floating point number.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_number1 BINARY_FLOAT;
+  3    lv_number2 BINARY_DOUBLE := 89015698736543.4028234663852886E+038d;
+  4  BEGIN
+  5    dbms_output.put_line(lv_number2);
+  6    lv_number1 := lv_number2;
+  7    dbms_output.put_line(lv_number1);
+  8  END;
+  9  /
+                      </code></pre>
+
+              <p>prints the following:</p>
+
+              <pre><code class="language-markup">
+                        8.9015698736543403E+051
+Inf
+                      </code></pre>
+
+              <p>The output from this program shows you what happens when you assign a value from a <code>BINARY_DOUBLE</code>
+                to a <code>BINARY_FLOAT</code> variable. The outcome might result in an error, but it most
+                certainly
+                won&#x2019;t
+                manifest itself during the assignment. Your program will probably throw an exception when you
+                attempt
+                to
+                use
+                the new variable. The Inf represents infinity or a value outside the range of values for the <code>BINARY_FLOAT</code>
+                data type.</p>
+              <p>In this case, the <code>BINARY_DOUBLE</code> value is simply too large for a <code>BINARY_FLOAT</code>
+                data
+                type. The value assigned to the <code>BINARY_FLOAT</code> is infinity because the 64-bit value
+                represents
+                infinity within the scope of a 32-bit data type. Note that no error is raised during the
+                assignment,
+                and
+                the
+                implicit casting could break your program&#x2019;s downstream logic.</p>
+              <p style="clear:both">
+              </p>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div title="Click to see the instructions ..." class="collapsible-header">Control Structures
+            <i class="material-icons left">keyboard_arrow_right</i>
+          </div>
+          <div class="collapsible-body">
+            <h4>Control Structures</h4>
+            <p>Control structures do two things: They check logical conditions and branch program execution, and they
+              repeat
+              (iterate) over a condition until it is met or they&#x2019;re instructed to exit. The if, elsif, else, and
+              CASE
+              statements are conditional structures, while loops allow you to repeat behaviors and are known as
+              iterative
+              structures.</p>
+            <div style="margin-left:0px">
+              <p style="clear:both">
+              </p>
+              <p style="font-size:115%;font-weight:bold;"><code>IF</code> Statement</p>
+              <p>The if or elsif statements work on a concept of Boolean logic. A Boolean variable or an
+                expression,
+                like a
+                comparison of values, is the only criterion for an if or elsif statement. While this seems simple,
+                it
+                really
+                isn&#x2019;t, because truth or untruth has a third case in an Oracle database. A Boolean variable or
+                expression
+                can
+                be true, false, or null. This is called three-valued logic.</p>
+              <p>You can manage three-valued logic by using the NVL built-in function. It allows you to impose an
+                embedded
+                check for a null and return the opposite of the logical condition you attempted to validate on
+                lines
+                5
+                and
+                7
+                in the next program sample.</p>
+              <p>The following illustrates checking for truth of a Boolean and truth of an expression, ultimately
+                printing
+                the message that neither condition is true:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_boolean BOOLEAN;
+  3    lv_number  NUMBER;
+  4  BEGIN
+  5    IF NVL(lv_boolean,FALSE) THEN
+  6      dbms_output.put_line(&apos;Prints when the variable is true.&apos;);
+  7    ELSIF NVL((lv_number &lt; 10),FALSE) THEN
+  8      dbms_output.put_line(&apos;Prints when the expression is true.&apos;);
+  9    ELSE
+ 10      dbms_output.put_line(&apos;Prints when both variables are null values.&apos;);
+ 11    END IF;
+ 12  END;
+ 13  /
+                      </code></pre>
+
+              <p>This prints</p>
+
+              <pre><code class="language-markup">
+                        Prints when variables are null values.
+                      </code></pre>
+
+              <p>This always prints the else statement, because the variables are only defined, not declared.
+                PL/SQL
+                undeclared variables are always null values.</p>
+              <p>The <code>NVL</code> built-in function lets you create programs that guarantee behavior, which is
+                most
+                likely one of the critical things you should do as a developer. The guarantee becomes possible
+                because
+                you&#x2019;re
+                changing the rules and making natural three-valued logic behave as two-valued logic. Sometimes,
+                that&#x2019;s
+                not
+                possible, but oddly enough, when it isn&#x2019;t possible, there&#x2019;s a use case that will compel
+                you to
+                provide
+                code
+                for the null condition.</p>
+              <p style="font-size:115%;font-weight:bold;"><code>CASE</code> Statement</p>
+              <p>The <code>CASE</code> statement appears very similar to a switch structure in many programming
+                languages,
+                but it doesn&#x2019;t perform in the same way, because it doesn&#x2019;t support fall through. Fall
+                through
+                is
+                the
+                behavior
+                of finding the first true case and then performing all remaining cases. The <code>CASE</code>
+                statement
+                in
+                PL/SQL performs like an <em>if-elsif-else</em> statement.</p>
+              <p>There are two types of <code>CASE</code> statements: the simple case and the searched case. You
+                can
+                use a
+                <code>CHAR</code>, <code>NCHAR</code>, or <code>VARCHAR2</code> data type in simple <code>CASE</code>
+                statements and any Boolean expression in searched case statements.</p>
+              <p>The following program shows how to write a simple <code>CASE</code> statement. The selector
+                variable
+                is a
+                <code>VARCHAR2</code> variable assigned a value through a substitution variable.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_selector VARCHAR2(20);
+  3  BEGIN
+  4    lv_selector := &apos;&amp;input&apos;;
+  5    CASE lv_selector
+  6      WHEN &apos;Apple&apos; THEN
+  7        dbms_output.put_line(&apos;Is it a red delicious apple?&apos;);
+  8      WHEN &apos;Orange&apos; THEN
+  9        dbms_output.put_line(&apos;Is it a navel orange?&apos;);
+ 10      ELSE
+ 11        dbms_output.put_line(&apos;It&apos;&apos;s a [&apos;||lv_selector||&apos;]?&apos;);
+ 12      END IF;
+ 13  END;
+ 14  /
+                      </code></pre>
+
+              <p>The <code>WHEN</code> clauses validate their values against the <code>CASE</code> selector on line
+                5.
+                When
+                one <code>WHEN</code> clause matches the selector, the program runs the instructions in that <code>WHEN</code>
+                clause and exits the <code>CASE</code> block. The break statement found in languages such as C,
+                C++,
+                C#,
+                and
+                Java is implicitly present.</p>
+              <p>A searched <code>CASE</code> statement works different from a simple CASE because it doesn&#x2019;t
+                limit
+                itself
+                to
+                an equality match of values. You can use a searched <code>CASE</code> to validate whether a number
+                is
+                in a
+                range or in a set. The selector for a searched <code>CASE</code> is implicitly true and can be
+                excluded
+                unless you want to check for untruth. You provide a false selector value on line 2 if the <code>WHEN</code>
+                clauses validate against a false condition, like this:</p>
+
+              <pre><code class="language-sql">
+                          2    CASE FALSE
+                      </code></pre>
+
+              <p>The following program validates against truth:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; BEGIN
+  2    CASE
+  3      WHEN (1 &lt;&gt; 1) THEN
+  4        dbms_output.put_line(&apos;Impossible!&apos;);
+  5      WHEN (3 &gt; 2) THEN
+  6        dbms_output.put_line(&apos;A valid range comparison.&apos;);
+  7      ELSE
+  8        dbms_output.put_line(&apos;Never reached.&apos;);
+  9    END CASE;
+ 10  END;
+ 11  /
+                      </code></pre>
+
+              <p>The range validation on line 5 is met, and it prints this:</p>
+
+              <pre><code class="language-sql">
+                        A valid RANGE comparison.
+                      </code></pre>
+
+              <p>Unlike the if and elsif statements, you don&#x2019;t need to reduce the natural three-valued logic to
+                two-valued
+                logic. If a searched <code>CASE</code> statement&#x2019;s <code>WHEN</code> clause isn&#x2019;t met, it
+                continues
+                until
+                one
+                is met or the else statement is reached.</p>
+              <p style="font-size:115%;font-weight:bold;">Iterative Structures</p>
+              <p>Iterative statements are blocks that let you repeat a statement or a set of statements. These
+                statements
+                come in two varieties: a guard-on-entry and guard-on-exit loop.</p>
+              <p>Three loop structures in PL/SQL let you implement iteration: the for, while, and simple loop
+                structures.
+                You
+                can use them either with or without a cursor. A cursor is a PL/SQL structure that lets you access
+                the
+                result
+                of a query row-by-row or as a bulk operation.</p>
+              <p style="font-size:105%;font-weight:bold;"><code>FOR</code> Loop Statements</p>
+              <p>You can implement the for loop as a range or cursor loop. A range loop moves through a set of
+                sequential
+                numbers, but you need to know the beginning and ending values. It is a guard-on-exit looping
+                structure.
+                You
+                can navigate through a for loop forward or backward by using an ascending integer range. Here&#x2019;s
+                an
+                example:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; BEGIN
+  2    FOR i IN 0..9 LOOP
+  3      dbms_output.put_line(&apos;[&apos;||i||&apos;][&apos;||TO_CHAR(i+1)||&apos;]&apos;);
+  4    END LOOP;
+  5  END;
+  6  /
+                      </code></pre>
+
+              <p>The value of the iterator, i, is equal to the numbers in the inclusive range values. The iterator
+                has
+                a
+                <code>PLS_INTEGER</code> data type. This program prints this:</p>
+
+              <pre><code class="language-sql">
+                        [0][1]
+[1][2]
+[2][3]
+ ...
+[7][8]
+[8][9]
+[9][10]
+                      </code></pre>
+
+              <p>Range for loops typically start with 1 and move to a higher number, but you can use a 0 (zero) as
+                the
+                low
+                value in the range. A 0 is rarely used as a starting point, because arrays and cursors use 1-based
+                numbering.
+                The example shows you how to do it, but I want you to know that you shouldn&#x2019;t do it.</p>
+              <p>The next range loop moves through the sequence from the highest to the lowest number, and it uses
+                a
+                1-based
+                number model. Notice that the only evidence of decrementing behavior is the <code>REVERSE</code>
+                reserved
+                word.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; BEGIN
+  2    FOR i IN REVERSE 1..9 LOOP
+  3      dbms_output.put_line(&apos;[&apos;||i||&apos;][&apos;||TO_CHAR(i+1)||&apos;]&apos;);
+  4    END LOOP;
+  5  END;
+  6  /
+                      </code></pre>
+
+              <p>Cursor for loops work with data sets returned by queries. Two static patterns are possible, in
+                addition to
+                an implicit dynamic cursor and a parameterized dynamic cursor. The first example shows you how to
+                write
+                a
+                static cursor without a declaration block. You should write this type of code only when you&#x2019;re
+                doing
+                a
+                quick
+                test program or standalone script.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; BEGIN
+  2    FOR i IN (SELECT item_title FROM item) LOOP
+  3      dbms_output.put_line(i.item_title);
+  4    END LOOP;
+  5  END;
+  6  /
+                      </code></pre>
+
+              <p>Line 2 contains the static cursor inside parentheses. At runtime, the query becomes an implicit
+                cursor.
+                Implicit cursors like these should always be static queries. You should put queries into formal
+                cursors,
+                and
+                then call them in the execution block, like this:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    CURSOR c IS
+  3      SELECT item_title FROM item;
+  4  BEGIN
+  2    FOR i IN c LOOP
+  3      dbms_output.put_line(i.item_title);
+  4    END LOOP;
+  5  END;
+  6  /
+                      </code></pre>
+
+              <p>The program declares a formal static cursor on lines 2 and 3. The for loop implicitly opens and
+                fetches
+                records from the cursor on line 5. This type of program is more readable than the preceding
+                example.
+                It
+                is
+                also adaptable if your requirements evolve from a static to dynamic cursor. Whether or not you
+                define
+                cursors
+                with formal parameters, you can include variables in a formal cursor declaration.</p>
+              <p>The following shows you how to implement a cursor with a formal parameter. The formal parameter
+                creates a
+                dynamic cursor.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_search_string VARCHAR2(60);
+  3    CURSOR c (cv_search VARCHAR2) IS
+  4      SELECT item_title
+  5      FROM item
+  6      WHERE REGEXP_LIKE(item_title,&apos;^&apos;||cv_search||&apos;*+&apos;);
+  7  BEGIN
+  8    FOR i IN c (&apos;&amp;input&apos;) LOOP
+  9      dbms_output.put_line(i.item_title);
+ 10    END LOOP;
+ 11  END;
+ 12  /
+                      </code></pre>
+
+              <p>The lines of interest are 3, 6, and 8. Line 3 declares the formal parameter for a dynamic cursor.
+                Line
+                6
+                shows the use of the formal parameter in the cursor. Line 8 shows the actual parameter calling the
+                cursor.
+                The call parameter is a substitution variable because the anonymous block then becomes dynamic. You
+                can
+                eliminate the formal parameter from the cursor on line 3 and replace the formal cursor parameter on
+                line 6
+                with a substitution variable, but that&#x2019;s a very poor coding practice. As a rule, you should
+                always
+                define
+                formal parameters for dynamic cursors.</p>
+              <p>This concludes the basics of a for loop. A twist on the for loop involves the <code>WHERE CURRENT
+                  OF</code>
+                clause, which is discussed in the next section.</p>
+              <p style="font-size:105%;font-weight:bold;"><code>WHERE CURRENT OF</code> Clause</p>
+              <p>A big to do about nothing would be the <code>WHERE CURRENT OF</code> clause. In my opinion, bulk
+                operations
+                are generally the better solution. It&#x2019;s important, however, to show an example in a workbook
+                like
+                this,
+                so
+                I&#x2019;ve included two.</p>
+              <p>The first example shows you how to lock a row with the cursor and then update the same table in a
+                for
+                loop,
+                as follows:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    CURSOR c IS
+  3      SELECT * FROM item
+  4      WHERE item_id BETWEEN 1031 AND 1040
+  5      FOR UPDATE;
+  6  BEGIN
+  7    FOR I IN c LOOP
+  8      UPDATE item SET last_updated_by = 3
+  9      WHERE CURRENT OF c;
+ 10    END LOOP;
+ 11  END;
+ 12  /
+                      </code></pre>
+
+              <p>Line 5 locks the rows with the <code>FOR UPDATE</code> clause until a <code>COMMIT</code> or <code>ROLLBACK</code>
+                statement occurs in the current session or connection. Line 9 correlates the update to a row
+                returned
+                by
+                the
+                cursor.</p>
+              <p>The next example demonstrates how to use the WHERE CURRENT OF in a bulk operation. It&#x2019;s an
+                unavoidable
+                forward reference to material covered later in this chapter.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    TYPE update_record IS RECORD
+  3    ( last_updated_by  NUMBER
+  4    , last_update_date DATE );
+  5    TYPE update_table IS TABLE OF UPDATE_RECORD;
+  6    updates UPDATE_TABLE;
+  7    CURSOR c IS
+  8      SELECT last_updated_by, last_update_date
+  9      FROM item
+ 10      WHERE  item_id BETWEEN 1031 AND 1040
+ 11      FOR UPDATE;
+ 12  BEGIN
+ 13    OPEN c;
+ 14    LOOP
+ 15      FETCH c BULK COLLECT INTO updates LIMIT 5;
+ 16      EXIT WHEN updates.COUNT = 0;
+ 17      FORALL i IN updates.FIRST..updates.LAST
+ 18        UPDATE item
+ 19        SET last_updated_by = updates(i).last_updated_by
+ 20        ,   last_update_date = updates(i).last_update_date
+ 21    WHERE CURRENT OF c;
+ 22  END;
+ 23  /
+                      </code></pre>
+
+              <p>Like the row-by-row example, the <code>FOR UPDATE</code> clause on line 9 locks the rows. The
+                <code>WHERE
+                  CURRENT OF</code> clause on line 21 correlates the update to the rows returned by the bulk
+                collected
+                cursor.</p>
+              <p>Now that I&#x2019;ve shown you how to do it, you might wonder why would you want to? The same thing
+                can
+                be
+                accomplished by a correlated <code>UPDATE</code> statement, like this:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; UPDATE item i1
+  2  SET    last_updated_by = 3
+  3  ,      last_update_date = TRUNC(SYSDATE)
+  4  WHERE  EXISTS (SELECT NULL FROM item i2
+  5                 WHERE  item_id BETWEEN 1031 AND 1040
+  6                 AND    i1.ROWID = i2.ROWID);
+                      </code></pre>
+
+              <p>In fact, Oracle&#x2019;s documentation indicates that it recommends correlated <code>UDPATE</code> and
+                <code>DELETE</code>
+                statements over the use of the <code>WHERE CURRENT OF</code> clause. I must also recommend native
+                SQL
+                solutions when they&#x2019;re available.</p>
+              <p>The range and cursor for loops are powerful iterative structures. Their beauty lies in their
+                simplicity,
+                and
+                their curse lies in their implicit opening and closing of cursor resources. You should use these
+                structures
+                when access to the data is straightforward and row-by-row auditing isn&#x2019;t required. When you need
+                to
+                perform
+                row-by-row auditing, you should use a while or simple loop because they give you more control.</p>
+              <p style="font-size:105%;font-weight:bold;"><code>WHILE</code> Loop Statements</p>
+              <p>A <code>WHILE</code> loop is a guard-on-entry loop: You need to manage both the entry and exit
+                criteria of
+                a
+                while loop. Unlike the for loop, with the while loop you don&#x2019;t need an index value because you
+                can
+                use
+                other
+                criteria to meet the control entrance and exit. If you use an index, the Oracle 11<em>g</em> <code>CONTINUE</code>
+                statement can make control more complex, because it allows you to abort an iteration and return to
+                the
+                top
+                of
+                the loop:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_counter NUMBER := 1;
+  3  BEGIN
+  4    WHILE (lv_counter &lt; 5) LOOP
+  5      dbms_output.put(&apos;Index at top [&apos;||lv_counter||&apos;]&apos;);
+  6      IF lv_counter &gt;= 1 THEN
+  7        IF MOD(lv_counter,2) = 0 THEN
+  8          dbms_output.new_line();
+  9          lv_counter := lv_counter + 1;
+ 10          CONTINUE;
+ 11        END IF;
+ 12        dbms_output.put_line(&apos;[&apos;||lv_counter||&apos;]&apos;);
+ 13      END IF;
+ 14      lv_counter := lv_counter + 1;
+ 15    END LOOP;
+ 16  END;
+ 17  /
+                      </code></pre>
+
+              <p>This prints the following:</p>
+
+              <pre><code class="language-markup">
+                        Index at top [1][1]
+Index at top [2]
+Index at top [3][3]
+Index at top [4]
+                      </code></pre>
+
+              <p>Only odd number counter values make it to the bottom of the loop, as illustrated by the second
+                printing of
+                the counter value. That&#x2019;s because the CONTINUE statement prints a line return and returns
+                control
+                to
+                the
+                top
+                of the loop. You could also do the same thing with the <code>GOTO</code> statement and label. You
+                enclose
+                labels inside guillemets, also known as angle brackets. They&#x2019;re available in releases prior to
+                Oracle
+                11<em>g</em>,
+                and although it pains me to tell you about them, here&#x2019;s an example:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2     lv_counter NUMBER := 1;
+  3  BEGIN
+  4    WHILE (lv_counter &lt; 5) LOOP
+  5      dbms_output.put(&apos;Index at top [&apos;||lv_counter||&apos;]&apos;);
+  6      IF lv_counter &gt;= 1 THEN
+  7        IF MOD(lv_counter,2) = 0 THEN
+  8          dbms_output.new_line();
+  9          GOTO skippy;
+ 10        END IF;
+ 11        dbms_output.put_line(&apos;[&apos;||lv_counter||&apos;]&apos;);
+ 12      END IF;
+ 13      &lt;&lt; skippy &gt;&gt;
+ 14      lv_counter := lv_counter + 1;
+ 15    END LOOP;
+ 16  END;
+ 17  /
+                      </code></pre>
+
+              <p>The <code>GOTO</code> statement on line 9 skips to the incrementing instruction for the control
+                variable
+                on
+                line 13. It is actually a bit easier to read than the <code>CONTINUE</code> statement shown
+                earlier.</p>
+              <p>The <code>GOTO</code> statement should be avoided whenever possible, however. The <code>CONTINUE</code>
+                should be used minimally and carefully. The while loop is powerful but can be tricky if you&#x2019;re
+                not
+                careful
+                when using a <code>CONTINUE</code> statement. A poorly coded while loop that contains a <code>CONTINUE</code>
+                statement can cause an infinite loop.</p>
+              <p style="font-size:105%;font-weight:bold;">Simple Loop Statements</p>
+              <p>The simple loop statement is anything but simple. You use it when you want to control everything
+                that
+                surrounds access to an explicit cursor. Some of these controls are provided through four built-in
+                cursor
+                attributes:</p>
+              <ul>
+                <li><strong><code>%FOUND</code></strong> Returns <code>TRUE</code> only when a DML statement has
+                  changed or
+                  returned one or more rows</li>
+                <li><strong><code>%ISOPEN</code></strong> Returns TRUE when an explicit cursor is open and FALSE
+                  when
+                  an
+                  explicit cursor isn&#x2019;t open or for any implicit cursor (Implicit cursors close immediately
+                  after
+                  running.)</li>
+                <li><strong><code>%NOTFOUND</code></strong> Returns TRUE when a DML statement fails to change or
+                  cursor
+                  fails
+                  to return at least one row</li>
+                <li><strong><code>%ROWCOUNT</code></strong> Returns the number of rows changed by a DML statement
+                  or
+                  the
+                  number of rows returned by a cursor or <code>SELECT INTO</code> statement</li>
+              </ul>
+              <p>These attributes work with cursors or ordinary SQL statements. You access ordinary SQL statements
+                by
+                referring to SQL instead of a cursor name. A <code>SELECT-INTO</code>, <code>INSERT</code>, <code>UPDATE</code>,
+                or <code>DELETE</code> statement is found when it processes rows and not found when it doesn&#x2019;t.
+                For
+                example,
+                the following anonymous block uses cursor attributes to manage printing log statements to the
+                console:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; BEGIN
+  2    UPDATE   system_user
+  3    SET      last_update_date = SYSDATE;
+  4    IF SQL%FOUND THEN
+  5      dbms_output.put_line(&apos;Updated [&apos;||SQL%ROWCOUNT||&apos;]&apos;);
+  6    ELSE
+  7      dbms_output.put_line(&apos;Nothing updated!&apos;);
+  8    END IF;
+  9  END;
+ 10  /
+                      </code></pre>
+
+              <p>The <code>SQL%FOUND</code> on line 4 checks whether a SQL statement was processed. As you may have
+                surmised,
+                SQL isn&#x2019;t just an acronym in Oracle PL/SQL, it is a reserved word that links to an anonymous
+                cursor.
+                If
+                <code>SQL%FOUND</code>
+                returns <code>TRUE</code>, then line 5 prints the number of rows updated in the table.</p>
+              <p>A typical simple loop opens a cursor, fetches rows from a cursor, processes rows from a cursor,
+                and
+                closes
+                a
+                cursor. The following program demonstrates those steps and illustrates an anchored data type:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_id    item.item_id%TYPE;   -- This is an anchored type.
+  3    lv_title VARCHAR2(60);
+  4    CURSOR c IS
+  5      SELECT   item_id, item_title
+  6      FROM     item;
+  7  BEGIN
+  8    OPEN c;
+  9    LOOP
+ 10      FETCH c INTO lv_id, lv_title;
+ 11      EXIT WHEN c%NOTFOUND;
+ 12      dbms_output.put_line(&apos;Title [&apos;||lv_title||&apos;]&apos;);
+ 13    END LOOP;
+ 14    CLOSE c;
+ 15  END;
+ 16  /
+                      </code></pre>
+
+              <p>This program defines one variable by anchoring the data type to the definition of the <code>item_id</code>
+                column in the item table. When the definition of the table changes, you don&#x2019;t have to change
+                your
+                program
+                because it will adjust automatically. Automatic adjustments of data type work best when changes are
+                limited
+                to size within a type and they collapse when changes of a column&#x2019;s data type isn&#x2019;t
+                supported by
+                implicit
+                type
+                casting. The second variable is explicitly assigned a data type, and any change to the table would
+                require
+                a
+                change to the assigned data type. The first statement after you start a simple loop fetches a row
+                of
+                data,
+                and the second, line 11, checks to make sure a row was fetched. Line 11 also exits the loop when no
+                record
+                is
+                found, which is typically after all rows have been read or no rows were found.</p>
+              <p>You can extend the preceding model by creating a user-defined record structure and returning the
+                row
+                into
+                a
+                single record structure. Record structures are composite variables. The following example uses a
+                <code>%ROWTYPE</code>
+                pseudo attribute to anchor a catalog table definition to a local variable:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_item_record item%ROWTYPE;
+  3    CURSOR c IS
+  4      SELECT   *
+  5      FROM     item;
+  6  BEGIN
+  7    OPEN c;
+  8    LOOP
+  9      FETCH c INTO lv_item_record;
+ 10      EXIT WHEN c%NOTFOUND;
+ 11      dbms_output.put_line(&apos;Title [&apos;||lv_item_record.item_title||&apos;]&apos;);
+ 12    END LOOP;
+ 13    CLOSE c;
+ 14  END;
+ 15  /
+                      </code></pre>
+
+              <p>On line 11, the <code>lv_item_record.item_title</code> statement returns the value of a field in
+                the
+                row
+                of
+                data. The dot (<code>.</code>) between the local variable and column name is the <em>component
+                  selector</em>.
+                You actually read this reference from right to left. It means the <code>item_title</code> is
+                selected
+                from
+                the <code>lv_item_record</code> component, which is a local record structure variable.</p>
+              <p>You could also create a record type explicitly. This is often done when you want only a subset of
+                the
+                columns in a table and you don&#x2019;t want to create a view or anchor the variable to a cursor. A
+                local
+                record
+                set
+                variable would be like the following:</p>
+
+              <pre><code class="language-sql">
+                        TYPE item_record IS RECORD
+( id    NUMBER
+, title VARCHAR2(60));
+                      </code></pre>
+
+              <p>The best approach simply lets you anchor a local variable to the <code>SELECT</code>-list returned
+                by
+                a
+                <code>CURSOR</code>, which is a natural record structure. You could rewrite the program like this:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    CURSOR c IS
+  3      SELECT *
+  4      FROM item;
+  5      lv_item_record c%ROWTYPE;
+  6  BEGIN
+  7    OPEN c;
+  8    LOOP
+  9      FETCH c INTO lv_item_record;
+ 10      EXIT WHEN c%NOTFOUND;
+ 11      dbms_output.put_line(&apos;Title [&apos;||lv_item_record.item_title||&apos;]&apos;);
+ 12    END LOOP;
+ 13    CLOSE c;
+ 14  END;
+ 15  /
+                      </code></pre>
+
+              <p>Line 5 declares a variable that anchors itself to the definition of a <code>CURSOR</code>. If you
+                change
+                the
+                cursor, the variable automatically adjusts. This is the most flexible and least-coupled way to
+                anchor
+                a
+                variable in PL/SQL.</p>
+              <p>You&#x2019;ll encounter some glitches down the road with local types like these, because
+                they&#x2019;re
+                limited
+                exclusively to a PL/SQL context. </p>
+              <p style="clear:both">
+              </p>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div title="Click to see the instructions ..." class="collapsible-header">Exception Handling
+            <i class="material-icons left">keyboard_arrow_right</i>
+          </div>
+          <div class="collapsible-body">
+            <h4>Exception Handling</h4>
+            <p>PL/SQL provides an optional block for exception handling. It manages any exceptions that occur while
+              running
+              the
+              execution block. Errors raised in the declaration block are thrown to and managed by the calling scope
+              program.</p>
+            <div style="margin-left:0px">
+              <p style="clear:both">
+              </p>
+              <p>Oracle provides two built-in exception management functions. They are:</p>
+              <ul>
+                <li><strong><code>SQLCODE</code></strong> Returns a negative number that maps to the Oracle
+                  predefined
+                  exceptions, but one special case, the <code>NO_DATA_FOUND</code> exception, returns 100.</li>
+                <li><strong><code>SQLERRM</code></strong> Is overloaded and provides the following behaviors:
+                  Returns
+                  the
+                  actual error as a negative integer; returns a user-defined exception when the number is positive
+                  or
+                  not
+                  found in the predefined Oracle exception list; and returns the actual number parameter as a
+                  negative
+                  integer with the Oracle-defined message.</li>
+              </ul>
+              <p>The simplest exception handler uses the Oracle keyword <code>OTHERS</code>, and it catches all
+                raised
+                exceptions from the execution block:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_letter  VARCHAR2(1);
+  3    lv_phrase VARCHAR2(2) := &apos;AB&apos;;
+  4  BEGIN
+  5    lv_letter := lv_phrase;
+  6  EXCEPTION
+  7    WHEN OTHERS THEN
+  8      dbms_output.put_line(&apos;Error:&apos;||CHR(10)||SQLERRM);
+  9  END;
+ 10  /
+                      </code></pre>
+
+              <p>The assignment of a two-character string to a single-character string on line 5 raises (throws) an
+                exception, which is caught by the exception handler and printed to console, like:</p>
+
+              <pre><code class="language-sql">
+                        Error:
+ORA-06502: PL/SQL: numeric OR VALUE error: character string
+buffer too small
+                      </code></pre>
+
+              <p>Oracle also provides a set of predefined exceptions in the <code>STANDARD</code> package. Standard
+                error
+                names can replace the <code>OTHERS</code> keyword. The <code>VALUE_ERROR</code> keyword could do so
+                on
+                line
+                7, as shown:</p>
+
+              <pre><code class="language-sql">
+                          7    WHEN VALUE_ERROR THEN
+                      </code></pre>
+
+              <p>This would catch the <code>ORA-06502</code> error but not any other exception, which means we
+                would
+                now
+                need
+                two error handlers. We&#x2019;ll need one error handler for the specific &#x201C;numeric or value
+                error&#x201D; and
+                another
+                for
+                everything else, more or less a &#x201C;catch all&#x201D; handler. The new exception block would look
+                like
+                this:</p>
+
+              <pre><code class="language-sql">
+                          5  ...
+  6  EXCEPTION
+  7    WHEN VALUE_ERROR THEN   -- Specific error handler.
+  8      dbms_output.put_line(&apos;Error:&apos;||CHR(10)||SQLERRM);
+  9    WHEN OTHERS THEN        -- General error handler.
+ 10      dbms_output.put_line(&apos;Error:&apos;||CHR(10)||SQLERRM);
+ 11  END;
+ 12  /
+                      </code></pre>
+
+              <p>Many developers use only the <code>OTHERS</code> as a &#x201C;catch all,&#x201D; but good coding
+                practices
+                recommend
+                specific exception handlers. You should always place the specific exception handler before the
+                <code>OTHERS</code>
+                handler.</p>
+              <p>We also have the ability to define user-defined exceptions and write dynamic exceptions. The next
+                two
+                subsections discuss how.</p>
+              <p style="font-size:125%;font-weight:bold;">User-Defined Exceptions</p>
+              <p>You can declare user-defined exceptions two ways. One way lets you declare an <code>EXCEPTION</code>
+                variable and catch it by a user-defined exception number (oddly enough 1 is that number), and the
+                other
+                lets
+                you map an exception name to a known Oracle error code.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_error EXCEPTION;
+  3  BEGIN
+  4    RAISE lv_error;
+  5    dbms_output.put_line(&apos;Can&apos;&apos;t get here.&apos;);
+  6  EXCEPTION
+  7    WHEN OTHERS THEN
+  8      IF SQLCODE = 1 THEN
+  9        dbms_output.put_line(&apos;This is a [&apos;||SQLERRM||&apos;]&apos;);
+ 10      END IF;
+ 11  END;
+ 12  /
+                      </code></pre>
+
+              <p>The example declares a user-defined exception of <code>lv_error</code> on line 2 and raises it as
+                an
+                exception on line 4. The generic <code>OTHERS</code> exception traps the error on line 7, and the
+                IF
+                statement checks for a user-defined exception on line 8.</p>
+              <p>This program raises the exception and prints:</p>
+
+              <pre><code class="language-markup">
+                        This is a [User-Defined Exception].
+                      </code></pre>
+
+              <p>By default all user-defined exceptions have a SQLCODE value of 1. You could also replace the
+                user-defined
+                exception on line 4 with a call to a standard error specialized event.</p>
+
+              <pre><code class="language-sql">
+                          4    RAISE program_error;
+                      </code></pre>
+
+              <p>A two-step declaration process lets you declare an exception and map it to a<br>
+                number. The first step declares the variable and the second step maps the variable to an <code>EXCEPTION_INIT</code>
+                precompiler instruction.</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_sys_context VARCHAR2(20);
+  3    lv_error EXCEPTION;
+  4    PRAGMA EXCEPTION_INIT(lv_error,-2003);
+  5  BEGIN
+  6    lv_sys_context := SYS_CONTEXT(&apos;USERENV&apos;,&apos;PROXY_PUSHER&apos;);
+  7  EXCEPTION
+  8    WHEN lv_error THEN
+  9      dbms_output.put_line(&apos;This is a [&apos;||SQLERRM||&apos;].&apos;);
+ 10  END;
+ 11  /
+                      </code></pre>
+
+              <p>ine 3 declares the local exception variable and line 4 maps the Oracle error code to the
+                user-defined
+                exception. Line 6 throws an error because it provides an invalid <code>PROXY_PUSHER</code> string
+                as
+                a
+                call
+                parameter to the <code>SYS_CONTEXT</code> function.</p>
+              <p>The preceding test program raises an exception and prints:</p>
+
+              <pre><code class="language-markup">
+                        This is a [ORA-02003: invalid USERENV parameter].
+                      </code></pre>
+
+              <p>The <code>ORA-02003</code> is a real error code found in the <code>SYS.STANDARD</code> package.
+                You
+                can
+                read
+                the specification of that package to find a complete list of standard errors.</p>
+              <p style="font-size:125%;font-weight:bold;">Dynamic User-Defined Exceptions</p>
+              <p>Dynamic user-defined exceptions let you raise a customized exception by assigning a number in the
+                range of
+                -20,000 to -20,999. The <code>RAISE_APPLICATION_ERROR</code> function provides this ability in
+                Oracle.</p>
+              <p>The prototype is:</p>
+
+              <pre><code class="language-sql">
+                        RAISE_APPLICATION_ERROR(error_number, error_message [, keep_errors])
+                      </code></pre>
+
+              <p>The following program shows how to raise a dynamic user-defined exception:</p>
+
+              <pre><code class="language-sql">
+                        SQL&gt; DECLARE
+  2    lv_error EXCEPTION;
+  3    PRAGMA EXCEPTION_INIT(lv_error,-20001);
+  4  BEGIN
+  5    RAISE_APPLICATION_ERROR(-20001,&apos;A less original message.&apos;);
+  6  EXCEPTION
+  7    WHEN lv_error THEN
+  8      dbms_output.put_line(SQLERRM);
+  9  END;
+ 10  /
+                      </code></pre>
+
+              <p>Line 2 declares the exception variable and line 3 maps the error to a value in the range of
+                available
+                values. Line 5 throws the exception and line 7 catches the error.</p>
+              <p>Oracle 11<em>g</em> also provides a stack trace management function in the <code>DBMS_UTILITY</code>
+                package. It&#x2019;s the <code>FORMAT_ERROR_BACKTRACE</code> function. Handling errors is important and
+                much
+                more
+                can be said about managing them in an <code>EXCEPTION</code> block.</p>
+              <p style="clear:both">
+              </p>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <footer>
+      </footer>
+    </div>
+    <script src="../prism/prism.js"></script>
+    <script src="../materialize/js/materialize.min.js"></script>
+    <script src="../template/main.js"></script>
+  </div>
+</body>
+
+</html>
