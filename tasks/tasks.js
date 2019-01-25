@@ -3,6 +3,7 @@ let removeUnnecessaryPTags = require('./removeUnnecessaryPTags.js');
 let fixULTags = require('./fixULTags.js');
 let fixTitle = require('./fixTitle.js');
 let fixDropdowns = require('./fixDropdowns');
+let fixTables = require('./fixTables.js');
 let replaceCodeBlocks = require('./replaceCodeBlocks.js');
 
 module.exports = function (htmlObj) {
@@ -13,6 +14,7 @@ module.exports = function (htmlObj) {
         fixULTags,
         fixTitle,
         fixDropdowns,
+        fixTables,
         replaceCodeBlocks
     ];
 };
