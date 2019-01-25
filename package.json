@@ -7,7 +7,7 @@
     "template": "cd ./html_files && template-changer ../template/variables.txt ../template/template.handlebars",
     "cleanup": "node entry.js",
     "start": "cd ./html_files && template-changer ../template/variables.txt ../template/template.handlebars && cd ../ && node entry.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",
