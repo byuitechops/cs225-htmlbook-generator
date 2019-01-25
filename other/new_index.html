@@ -12,18 +12,30 @@
 </head>
 
 <body>
+  <div class="row" id="nav">
+    <div class="col s4">
+      <p class="left"><a href="">Previous</a></p>
+    </div>
+    <div class="col s4">
+      <p class="center-align"><a href="./new_toc.html">Table of Contents</a></p>
+    </div>
+    <div class="col s4">
+      <p class="right"><a href="">Next</a></p>
+    </div>
+  </div>
   <div id="content">
+
     <h2 id="post-6948">Stored Programs</h2>
     <div class="main">
       <p>Oracle introduced the PL/SQL programming language more than 20 years ago in the Oracle 6 database. PL/SQL
-        provides a procedural extentestsion to SQL and lets you call SQL from a PL/SQL program, or vice versa. This
-        blog
+        provides a procedural extension to SQL and lets you call SQL from a PL/SQL program, or vice versa. This blog
         page introduces you to the basics of writing stored programs in Oracle 11g and provides a summary overview of
         PL/SQL. You can find more complete treatment in Oracle Database 11g PL/SQL Programming.</p>
       <p>The concept of transactional SQL units delivered by <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code>
         statements and be combined with PL/SQL blocks and Transactional Control Language (TCL) let you write powerful
         database-centric programs.</p>
-      <p>In this blog page, you&#x2019;ll learn the basics of writing PL/SQL programs. The chapter covers the following
+      <p>In this blog page, you&#x2019;ll learn the basics of writing PL/SQL programs. The chapter covers the
+        following
         topics:</p>
       <ul class="browser-default">
         <li>Blocks</li>
@@ -43,7 +55,8 @@
           </div>
           <div class="collapsible-body">
             <h4>Anonymous Blocks</h4>
-            <p>PL/SQL blocks come in two types: anonymous (or unnamed) and named blocks. Anonymous block programs have
+            <p>PL/SQL blocks come in two types: anonymous (or unnamed) and named blocks. Anonymous block programs
+              have
               a
               fixed scope, while named blocks are more extensible resources. Named blocks are stored programs in an
               Oracle database.</p>
@@ -56,7 +69,8 @@
                 blocks
                 from other blocks by name, because they haven&#x2019;t got a name. All variables are passed to these
                 local
-                blocks by reference, which is the default in PL/SQL&#x2019;s scope model. This means an anonymous block
+                blocks by reference, which is the default in PL/SQL&#x2019;s scope model. This means an anonymous
+                block
                 program unit can reference any variables in the external or calling scope. The single exception to
                 this
                 rule occurs when you declare a local variable that replaces a calling scope variable.</p>
@@ -65,7 +79,8 @@
                 You
                 can call them from the schema where they&#x2019;re defined. Alternatively, you can call them from
                 another
-                schema that&#x2019;s been granted the execute privilege on the named program unit. Lastly, you can call
+                schema that&#x2019;s been granted the execute privilege on the named program unit. Lastly, you can
+                call
                 schema-level programs across a <code>DB_LINK</code>. <code>DB_LINK</code>s support calls between two
                 database instances across the network. Schema-level named programs present an interesting comparative
                 paradigm, because they act as public access methods in the scope of the schema but protected access
@@ -92,7 +107,8 @@
                 functions and procedures, while instance methods act like object type functions and procedures.</p>
               <p>Finally, you can store named block programs inside the declaration block of anonymous or named block
                 programs. These named block programs are known as local named block programs. You can call them only
-                from within the scope of their host program. They can&#x2019;t see other locally named programs unless
+                from within the scope of their host program. They can&#x2019;t see other locally named programs
+                unless
                 these
                 other programs are declared before the local programs in the same runtime scope. You can fix this by
                 adopting forward references before declaring local functions. A forward reference is a stub for a
@@ -135,7 +151,8 @@
                                   assigns
                                   the
                                   result
-                                  to variable <code>a</code>. The addition occurs before the assignment due to operator
+                                  to variable <code>a</code>. The addition occurs before the assignment due to
+                                  operator
                                   precedence.</p>
                               </td>
                             </tr>
@@ -143,14 +160,17 @@
                               <td><code>:</code></td>
                               <td>Association</td>
                               <td>
-                                <p>The <em>host variable indicator</em> precedes a valid identifier name and designates
+                                <p>The <em>host variable indicator</em> precedes a valid identifier name and
+                                  designates
                                   that
                                   identifier
-                                  as a session-level variable, also known as a bind variable, that can be defined with
+                                  as a session-level variable, also known as a bind variable, that can be defined
+                                  with
                                   SQL*Plus. Only
                                   the <code>CHAR</code>, <code>CLOB</code>, <code>NCHAR</code>, <code>NCLOB</code>,
                                   <code>NUMBER</code>,
-                                  <code>NVARCHAR2</code>, <code>REFCURSOR</code>, and <code>VARCHAR2</code> data types
+                                  <code>NVARCHAR2</code>, <code>REFCURSOR</code>, and <code>VARCHAR2</code> data
+                                  types
                                   are
                                   available
                                   for session variables.</p>
@@ -182,9 +202,11 @@ END;
                                     SELECT :my_string FROM dual;
                                   </code></pre>
 
-                                <p>or reuse the variable in another PL/SQL block program, because the variable enjoys a
+                                <p>or reuse the variable in another PL/SQL block program, because the variable enjoys
+                                  a
                                   session-level
-                                  scope. A subsequent anonymous block program in a script could then print the value in
+                                  scope. A subsequent anonymous block program in a script could then print the value
+                                  in
                                   the
                                   session
                                   variable:</p>
@@ -196,7 +218,8 @@ END;
 /
                                   </code></pre>
 
-                                <p>This is a flexible way to exchange variables between multiple statements and PL/SQL
+                                <p>This is a flexible way to exchange variables between multiple statements and
+                                  PL/SQL
                                   blocks
                                   in a
                                   single script file.</p>
@@ -233,7 +256,8 @@ END;
                                 <p>The <em>attribute indicator</em> lets you link a database catalog column, row, or
                                   cursor
                                   attributes.
-                                  You anchor a variable data type when you link a variable to a catalog object such as
+                                  You anchor a variable data type when you link a variable to a catalog object such
+                                  as
                                   a
                                   table
                                   or
@@ -244,7 +268,8 @@ END;
                               <td valign="top"><code>=&gt;</code></td>
                               <td valign="top">Association</td>
                               <td valign="top">
-                                <p>Use the <em>association operator</em> in name notation function and procedure calls.</p>
+                                <p>Use the <em>association operator</em> in name notation function and procedure
+                                  calls.</p>
                               </td>
                             </tr>
                             <tr>
@@ -273,7 +298,8 @@ cursor_name.cursor_attribute
                               <td valign="top"><code>@</code></td>
                               <td valign="top">Association</td>
                               <td valign="top">
-                                <p>Use the remote access indicator to access a remote database through database links.</p>
+                                <p>Use the remote access indicator to access a remote database through database
+                                  links.</p>
                               </td>
                             </tr>
                             <tr>
@@ -309,7 +335,8 @@ cursor_name.cursor_attribute
                               <td valign="top"><code>-</code></td>
                               <td valign="top">Comparison</td>
                               <td valign="top">
-                                <p>The <em>negation operator</em> changes a number from its positive to negative value.</p>
+                                <p>The <em>negation operator</em> changes a number from its positive to negative
+                                  value.</p>
                               </td>
                             </tr>
                             <tr>
@@ -371,7 +398,8 @@ cursor_name.cursor_attribute
                               <td valign="top"><code>&lt;=</code></td>
                               <td valign="top">Comparison</td>
                               <td valign="top">
-                                <p>This <em>inequality comparison operator</em> indicates that the left operand is less
+                                <p>This <em>inequality comparison operator</em> indicates that the left operand is
+                                  less
                                   than
                                   or
                                   equal
@@ -448,7 +476,8 @@ cursor_name.cursor_attribute
                               <td valign="top"><code>--</code></td>
                               <td valign="top">Delimiter</td>
                               <td valign="top">
-                                <p>With the single comment operator, everything to the right is treated as text and not
+                                <p>With the single comment operator, everything to the right is treated as text and
+                                  not
                                   parsed
                                   as part
                                   of a PL/SQL program. Here&#x2019;s an example:</p>
@@ -463,7 +492,8 @@ cursor_name.cursor_attribute
                               <td valign="top"><code>/*</code></td>
                               <td valign="top">Delimiter</td>
                               <td valign="top">
-                                <p>Use the <em>opening multiple-line comment delimiter</em> for comments; it instructs
+                                <p>Use the <em>opening multiple-line comment delimiter</em> for comments; it
+                                  instructs
                                   the
                                   parser to
                                   ignore everything until it reaches the closing multiple-line comment delimiter.
@@ -547,7 +577,8 @@ END;
                                   (identifier),
                                   your
                                   program returns a PLS-00302 error that says the identifier is not declared.</p>
-                                <p>You can also use this delimiter to build identifiers that include reserved symbols,
+                                <p>You can also use this delimiter to build identifiers that include reserved
+                                  symbols,
                                   such
                                   as
                                   an
@@ -576,15 +607,19 @@ END;
                               <td valign="top"><code>**</code></td>
                               <td valign="top">Math</td>
                               <td valign="top">
-                                <p>The <em>exponential operator</em> raises a left operand to the power designated by a
+                                <p>The <em>exponential operator</em> raises a left operand to the power designated by
+                                  a
                                   right
                                   operand.
-                                  This operator is given the highest precedence for math operators in the language. As
+                                  This operator is given the highest precedence for math operators in the language.
+                                  As
                                   a
                                   result, a
-                                  fractional exponent must be enclosed in parentheses (also known as expression or list
+                                  fractional exponent must be enclosed in parentheses (also known as expression or
+                                  list
                                   delimiters) to
-                                  designate order of operation. Without parentheses, the left operand is raised to the
+                                  designate order of operation. Without parentheses, the left operand is raised to
+                                  the
                                   power
                                   of
                                   the
@@ -598,7 +633,8 @@ END;
                                     a := 3**3;
                                   </code></pre>
 
-                                <p>You raise 8 to the fractional power of 1/3 and assign the result of 2 to variable a
+                                <p>You raise 8 to the fractional power of 1/3 and assign the result of 2 to variable
+                                  a
                                   by
                                   using
                                   the
@@ -670,7 +706,8 @@ END; /
                 statement
                 may end the execution block; the END statement ends either the execution or optional exception
                 block.</p>
-              <p>Prototypes are great, but they don&#x2019;t show you how to implement the code. You&#x2019;ll now see
+              <p>Prototypes are great, but they don&#x2019;t show you how to implement the code. You&#x2019;ll now
+                see
                 how to
                 write
                 a
@@ -695,7 +732,8 @@ END; /
                 you&#x2019;ll need to manage output from your PL/SQL programs by enabling a SQL*Plus formatting
                 environment
                 variable <code>SERVEROUTPUT</code>.</p>
-              <p>For example, the following might look like a complete program, but it isn&#x2019;t. It doesn&#x2019;t
+              <p>For example, the following might look like a complete program, but it isn&#x2019;t. It
+                doesn&#x2019;t
                 have
                 at
                 least
@@ -745,16 +783,19 @@ savepoint set sql execute commit forall merge pipe
   4  /
                         </code></pre>
 
-              <p>You&#x2019;ll want to remember this, because if you don&#x2019;t, it can cost you many fruitless hours
+              <p>You&#x2019;ll want to remember this, because if you don&#x2019;t, it can cost you many fruitless
+                hours
                 of
                 debugging.</p>
-              <p>You didn&#x2019;t need the SQL*Plus environment variable <code>SERVEROUTPUT</code> in this basic block
+              <p>You didn&#x2019;t need the SQL*Plus environment variable <code>SERVEROUTPUT</code> in this basic
+                block
                 test,
                 because nothing was being output from the program. The Hello World program requires that you output
                 a
                 line
                 of text, and that means you must enable <code>SERVEROUTPUT</code> before running your PL/SQL block.</p>
-              <p>If you &#x201C;fat finger&#x201D; something while typing a SQL or PL/SQL statement, you can start over
+              <p>If you &#x201C;fat finger&#x201D; something while typing a SQL or PL/SQL statement, you can start
+                over
                 by
                 pressing
                 three
@@ -765,7 +806,8 @@ savepoint set sql execute commit forall merge pipe
                 Oracle
                 database. The <code>DBMS_OUTPUT.PUT_LINE</code> call is more or less similar to echo in scripting
                 languages
-                or the <code>System.out.println()</code> static method call in Java. Moreover, this is PL/SQL&#x2019;s
+                or the <code>System.out.println()</code> static method call in Java. Moreover, this is
+                PL/SQL&#x2019;s
                 way
                 of
                 sending messages to standard out (<code>STDOUT</code>). Standard out is the output stream of a
@@ -855,7 +897,8 @@ SQL&gt; BEGIN
   7  /
                         </code></pre>
 
-              <p>You might not notice the single quotes around the substitution variable, but they&#x2019;re critical.
+              <p>You might not notice the single quotes around the substitution variable, but they&#x2019;re
+                critical.
                 When
                 the
                 program is run without a valid string value and no quotes, the engine parses over the null value
@@ -877,7 +920,8 @@ SQL&gt; BEGIN
                 declaration blocks. Otherwise, your code might fail at runtime because in functions and procedures
                 formal
                 parameters have no size constraints in PL/SQL.</p>
-              <p>Although constants aren&#x2019;t really too useful in anonymous block programs, this is a great place
+              <p>Although constants aren&#x2019;t really too useful in anonymous block programs, this is a great
+                place
                 to
                 show
                 you
@@ -907,7 +951,8 @@ SQL&gt; BEGIN
                 define
                 bind variables in the scope of a SQL*Plus session. In that scope, only the <code>CHAR</code>, <code>CLOB</code>,
                 <code>NCHAR</code>, <code>NCLOB</code>, <code>NUMBER</code>, <code>NVARCHAR2</code>, <code>REFCURSOR</code>,
-                and <code>VARCHAR2</code> data types are available. The term &#x201C;bind variable&#x201D; also applies
+                and <code>VARCHAR2</code> data types are available. The term &#x201C;bind variable&#x201D; also
+                applies
                 to
                 the
                 handling
@@ -963,7 +1008,8 @@ SQL&gt; BEGIN
                 command
                 line.</p>
               <p style="font-size:115%;font-weight:bold;font-type:italic;">Nested Blocks</p>
-              <p>You can put unnamed blocks inside other blocks. These nested blocks can&#x2019;t have names. You could
+              <p>You can put unnamed blocks inside other blocks. These nested blocks can&#x2019;t have names. You
+                could
                 rewrite
                 the preceding example with a nested block like this:</p>
 
@@ -993,7 +1039,8 @@ SQL&gt; BEGIN
               <p>Notice that lv_salutation is declared in both the outer and inner anonymous blocks. The physical
                 size
                 of
-                the outer block lv_salutation variable is five characters long, and the value is &#x201C;Hello&#x201D;,
+                the outer block lv_salutation variable is five characters long, and the value is
+                &#x201C;Hello&#x201D;,
                 whereas
                 the
                 inner
@@ -1024,7 +1071,8 @@ Hello Sam.
                 procedures in anonymous blocks. The forward reference to hector in the jack procedure lets you see
                 the
                 concept of forward-referencing stubs.</p>
-              <p>The problem with nested named blocks, however, is they&#x2019;re not published blocks. This means that
+              <p>The problem with nested named blocks, however, is they&#x2019;re not published blocks. This means
+                that
                 one
                 might
                 call another before the one being called is defined. This type of design problem is known as a
@@ -1050,7 +1098,8 @@ Hello Sam.
                         </code></pre>
 
               <p>Lines 2 through 5 define a local procedure, jack. Inside procedure jack is a call on line 4 to the
-                function hector. The function isn&#x2019;t defined at this point in the anonymous block, and it raises
+                function hector. The function isn&#x2019;t defined at this point in the anonymous block, and it
+                raises
                 an
                 out-of-scope error:</p>
 
@@ -1069,7 +1118,8 @@ PL/SQL: Statement ignored
                 Parsing is a compile-time process. Parsing recognizes identifiers, which are reserved words,
                 predefined
                 identifiers, quoted identifiers, user-defined variables, subroutines, or UDTs. Named blocks are
-                identifiers. Function hector isn&#x2019;t recognized as an identifier, because PL/SQL reads identifiers
+                identifiers. Function hector isn&#x2019;t recognized as an identifier, because PL/SQL reads
+                identifiers
                 into
                 memory from top to bottom. This is a single-pass parsing process. Under a single-pass parser,
                 function
@@ -1116,7 +1166,8 @@ PL/SQL: Statement ignored
                 procedures. To avoid this, you should consider a naming convention (like an <code>lv_</code>
                 preface)
                 for
-                locally named blocks that ensures they won&#x2019;t replace schema-level names in your stored programs.</p>
+                locally named blocks that ensures they won&#x2019;t replace schema-level names in your stored
+                programs.</p>
               <p style="clear:both">
               </p>
             </div>
@@ -1293,7 +1344,8 @@ PL/SQL: Statement ignored
                 The
                 hidden element of a stored program in an Oracle database is the back door that lets a function
                 transact
-                against the database. This means a function&#x2019;s black box can contain an INSERT, UPDATE, or DELETE
+                against the database. This means a function&#x2019;s black box can contain an INSERT, UPDATE, or
+                DELETE
                 statement.
                 Actually, it can contain a set of statements. The collection of statements can collectively be a
                 transaction.
@@ -1334,7 +1386,8 @@ PL/SQL: Statement ignored
                   an
                   <code>IN</code>&#x2013;
                   only mode parameter. It means a formal parameter is read-only. When you set a formal parameter as
-                  read-only, you can&#x2019;t alter it during the execution of the subroutine. You can assign a default
+                  read-only, you can&#x2019;t alter it during the execution of the subroutine. You can assign a
+                  default
                   value
                   to
                   a
@@ -1352,7 +1405,8 @@ PL/SQL: Statement ignored
                   write-only, no initial physical size is allocated to the variable. You allocate the physical size
                   and
                   value
-                  inside your subroutine. You can&#x2019;t assign a default value, which would make an OUT mode formal
+                  inside your subroutine. You can&#x2019;t assign a default value, which would make an OUT mode
+                  formal
                   parameter
                   optional. If you attempt that, you raise a <code>PLS-00230</code> error. The error says that an
                   <code>OUT</code>
@@ -1379,7 +1433,8 @@ PL/SQL: Statement ignored
                   physical
                   size
                   of the actual parameter is provided. While you can change the contents of the variable inside the
-                  subroutine, you can&#x2019;t change or exceed the actual parameter&#x2019;s allocated size. The <code>IN
+                  subroutine, you can&#x2019;t change or exceed the actual parameter&#x2019;s allocated size. The
+                  <code>IN
                     OUT</code>
                   mode
                   restrictions on default values and literal values mirror those of the <code>OUT</code> mode.</li>
@@ -1510,13 +1565,15 @@ SQL&gt; CALL adding(:one,:two) INTO :output;
                 calling
                 scope. Shared or cooperative processing means that a subroutine performs an operation on one or more
                 calling
-                scope variables. Cooperative processing doesn&#x2019;t consume all inputs but refines some of them. It
+                scope variables. Cooperative processing doesn&#x2019;t consume all inputs but refines some of them.
+                It
                 acts
                 like
                 an
                 oil refinery that processes crude oil, additives, and chemicals into fuel.</p>
               <p style="font-size:105%;font-weight:bold;">Pass-by-Value Procedures</p>
-              <p>A pass-by-value procedure receives values when they&#x2019;re called. They return nothing tangible to
+              <p>A pass-by-value procedure receives values when they&#x2019;re called. They return nothing tangible
+                to
                 the
                 calling
                 scope block, but they can interact with the database. Pass-by-value procedures implement a delegation
@@ -1714,7 +1771,8 @@ SQL&gt; EXECUTE change_string(:no_real_value);
                 data
                 type
                 is
-                a column that contains the two-character codes for U.S. states, because it won&#x2019;t allocate space
+                a column that contains the two-character codes for U.S. states, because it won&#x2019;t allocate
+                space
                 unnecessarily.</p>
               <p>You assign literal values to variable or fixed-length data types the same way. In fact, you make
                 assignments
@@ -1898,7 +1956,8 @@ ORA-06502: PL/SQL: numeric or value error: number precision too large
 ORA-06512: at line 5
                       </code></pre>
 
-              <p>The error is thrown because the physical digits of the <code>NUMBER(6,2)</code> data type can&#x2019;t
+              <p>The error is thrown because the physical digits of the <code>NUMBER(6,2)</code> data type
+                can&#x2019;t
                 hold
                 all
                 the
@@ -1972,7 +2031,8 @@ ORA-06512: at line 5
                 your
                 data. When you must mix numeric data types, you can prevent the loss of mathematical value during
                 assignments
-                by disallowing such assignments or qualifying in comments that you don&#x2019;t care about the loss of
+                by disallowing such assignments or qualifying in comments that you don&#x2019;t care about the loss
+                of
                 information.
                 The latter is a valid approach when you&#x2019;re reporting in hundreds, thousands, and millions,
                 provided
@@ -2036,7 +2096,8 @@ Inf
             <h4>Control Structures</h4>
             <p>Control structures do two things: They check logical conditions and branch program execution, and they
               repeat
-              (iterate) over a condition until it is met or they&#x2019;re instructed to exit. The if, elsif, else, and
+              (iterate) over a condition until it is met or they&#x2019;re instructed to exit. The if, elsif, else,
+              and
               CASE
               statements are conditional structures, while loops allow you to repeat behaviors and are known as
               iterative
@@ -2191,9 +2252,11 @@ Inf
                         A valid RANGE comparison.
                       </code></pre>
 
-              <p>Unlike the if and elsif statements, you don&#x2019;t need to reduce the natural three-valued logic to
+              <p>Unlike the if and elsif statements, you don&#x2019;t need to reduce the natural three-valued logic
+                to
                 two-valued
-                logic. If a searched <code>CASE</code> statement&#x2019;s <code>WHEN</code> clause isn&#x2019;t met, it
+                logic. If a searched <code>CASE</code> statement&#x2019;s <code>WHEN</code> clause isn&#x2019;t met,
+                it
                 continues
                 until
                 one
@@ -2215,7 +2278,8 @@ Inf
                 numbers, but you need to know the beginning and ending values. It is a guard-on-exit looping
                 structure.
                 You
-                can navigate through a for loop forward or backward by using an ascending integer range. Here&#x2019;s
+                can navigate through a for loop forward or backward by using an ascending integer range.
+                Here&#x2019;s
                 an
                 example:</p>
 
@@ -2432,7 +2496,8 @@ Inf
   6                 AND    i1.ROWID = i2.ROWID);
                       </code></pre>
 
-              <p>In fact, Oracle&#x2019;s documentation indicates that it recommends correlated <code>UDPATE</code> and
+              <p>In fact, Oracle&#x2019;s documentation indicates that it recommends correlated <code>UDPATE</code>
+                and
                 <code>DELETE</code>
                 statements over the use of the <code>WHERE CURRENT OF</code> clause. I must also recommend native
                 SQL
@@ -2442,7 +2507,8 @@ Inf
                 and
                 their curse lies in their implicit opening and closing of cursor resources. You should use these
                 structures
-                when access to the data is straightforward and row-by-row auditing isn&#x2019;t required. When you need
+                when access to the data is straightforward and row-by-row auditing isn&#x2019;t required. When you
+                need
                 to
                 perform
                 row-by-row auditing, you should use a while or simple loop because they give you more control.</p>
@@ -2563,7 +2629,8 @@ Index at top [4]
               <p>These attributes work with cursors or ordinary SQL statements. You access ordinary SQL statements
                 by
                 referring to SQL instead of a cursor name. A <code>SELECT-INTO</code>, <code>INSERT</code>, <code>UPDATE</code>,
-                or <code>DELETE</code> statement is found when it processes rows and not found when it doesn&#x2019;t.
+                or <code>DELETE</code> statement is found when it processes rows and not found when it
+                doesn&#x2019;t.
                 For
                 example,
                 the following anonymous block uses cursor attributes to manage printing log statements to the
@@ -2928,7 +2995,8 @@ buffer too small
                 available
                 values. Line 5 throws the exception and line 7 catches the error.</p>
               <p>Oracle 11<em>g</em> also provides a stack trace management function in the <code>DBMS_UTILITY</code>
-                package. It&#x2019;s the <code>FORMAT_ERROR_BACKTRACE</code> function. Handling errors is important and
+                package. It&#x2019;s the <code>FORMAT_ERROR_BACKTRACE</code> function. Handling errors is important
+                and
                 much
                 more
                 can be said about managing them in an <code>EXCEPTION</code> block.</p>
