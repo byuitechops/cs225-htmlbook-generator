@@ -15,6 +15,12 @@ function fixDropdowns(htmlObj, callback) {
                 dropdownTitleText = dropdownTitle.text();
                 dropdownTitle.replaceWith('');
             }
+            dropdownTitleText.trim();
+            if (/\s$/g.test(dropdownTitleText)) {
+                dropdownTitle = dropdown.find('p[class=dropdownclick]').first();
+                dropdownTitleText = dropdownTitle.text();
+                dropdownTitle.replaceWith('');
+            }
             let dropdownTemplate = `
             <ul class="collapsible expandable">
                 <li>
