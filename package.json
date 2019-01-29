@@ -21,6 +21,8 @@
   "homepage": "https://github.com/byuitechops/cs225-htmlbook-generator#readme",
   "dependencies": {
     "async": "^2.6.1",
-    "cheerio": "^1.0.0-rc.2"
+    "cheerio": "^1.0.0-rc.2",
+    "recursive-readdir": "^2.2.2",
+    "write": "^1.0.3"
   }
 }

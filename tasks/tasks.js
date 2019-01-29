@@ -12,7 +12,7 @@ module.exports = function (htmlObj) {
         removeText,
         removeUnnecessaryPTags,
         fixULTags,
-        fixTitle,
+        //fixTitle,
         fixDropdowns,
         fixTables,
         replaceCodeBlocks

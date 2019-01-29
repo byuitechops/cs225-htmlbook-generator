@@ -1,1 +1,2 @@
-*content    | #content    | html
+*main    | .main                   | html
+*title   | #content>h2:first-child | text

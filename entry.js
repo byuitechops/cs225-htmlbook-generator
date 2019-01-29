@@ -6,14 +6,14 @@ function getInput(dir, callback) {
     let fileNames;
     let filePath = path.resolve(dir);
     try {
-        fileNames = fs.readdirSync(filePath, 'utf-8');
+        fileNames = fs.readdirSync(filePath, 'utf-8').filter(file => path.extname(file) === '.html');
     } catch (err) {
         return err;
     }
     fileNames.forEach(fileName => {
         fs.readFile(path.join(filePath, fileName), 'utf8', (err, htmlText) => {
             if (err) {
-                callback(err);
+                callback(err, null, getOutput);
             }
             callback(null, {
                 fileName,
