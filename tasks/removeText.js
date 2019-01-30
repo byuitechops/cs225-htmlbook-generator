@@ -3,7 +3,7 @@ let $;
 
 function removeText(htmlObj, callback) {
     $ = cheerio.load(htmlObj.htmlText);
-    let textToRemove = [$('.comments'), $('.signature'), $('.tags'), $('.dropdownclick')];
+    let textToRemove = [$('.comments'), $('.signature'), $('.tags'), $('.dropdownclick'), $('#bubble'), $('#loginslider'), $('h1>a'), $('#sidebar'), $('form'), $('#comments'), $('#respond'), $('.reply')];
     textToRemove.forEach((item, i) => {
         item.each(function () {
             let element = $(this);

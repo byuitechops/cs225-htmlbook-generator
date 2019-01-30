@@ -1,5 +1,6 @@
 let removeText = require('./removeText.js');
 let removeUnnecessaryPTags = require('./removeUnnecessaryPTags.js');
+let fixTitle = require('./fixTitle.js');
 let fixULTags = require('./fixULTags.js');
 let fixDropdowns = require('./fixDropdowns');
 let removeArrows = require('./removeArrows.js');
@@ -11,6 +12,7 @@ module.exports = function (htmlObj) {
         (callback) => callback(null, htmlObj),
         removeText,
         removeUnnecessaryPTags,
+        fixTitle,
         fixULTags,
         fixDropdowns,
         removeArrows,

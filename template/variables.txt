@@ -1,2 +1,2 @@
-*main    | .main                   | html
-*title   | #content>h2:first-child | text
+*container    | #container                   | html
+*title        | #content>h2:first-child      | text

@@ -1,25 +1,29 @@
 const main = require('./main.js');
 const path = require('path');
 const fs = require('fs');
+const recursive = require('recursive-readdir');
+const writeFile = require('write');
+
 
 function getInput(dir, callback) {
-    let fileNames;
-    let filePath = path.resolve(dir);
-    try {
-        fileNames = fs.readdirSync(filePath, 'utf-8').filter(file => path.extname(file) === '.html');
-    } catch (err) {
-        return err;
-    }
-    fileNames.forEach(fileName => {
-        fs.readFile(path.join(filePath, fileName), 'utf8', (err, htmlText) => {
-            if (err) {
-                callback(err, null, getOutput);
-            }
-            callback(null, {
-                fileName,
-                htmlText
-            }, getOutput);
-        });
+    let rFilePath = path.resolve(dir);
+    recursive(rFilePath, (err, filePaths) => {
+        if (err) {
+            callback(err, null, getOutput);
+        } else {
+            filePaths.forEach(filePath => {
+                fs.readFile(filePath, 'utf8', (err, htmlText) => {
+                    if (err) {
+                        callback(err, null, getOutput);
+                    }
+                    filePath = filePath.slice([filePath.search(/michaelmclaughlin.info/g)]);
+                    callback(null, {
+                        filePath,
+                        htmlText
+                    }, getOutput);
+                });
+            });
+        }
     });
 }
 
@@ -28,11 +32,11 @@ function getOutput(err, htmlObj) {
     if (err) {
         console.error(err);
     } else {
-        fs.writeFile(`./new_html_files/new_${htmlObj.fileName}`, htmlObj.htmlText, err => {
+        writeFile(`./new_html_files/${htmlObj.filePath}`, htmlObj.htmlText, err => {
             if (err) {
                 console.error(err);
             } else {
-                console.log(`new_${htmlObj.fileName} successfully written`);
+                console.log('HTML file successfully written');
             }
         });
     }
@@ -40,5 +44,5 @@ function getOutput(err, htmlObj) {
 }
 
 (function () {
-    getInput('./html_files/template', main);
+    getInput('./html_files/TChanger_template/michaelmclaughlin.info', main);
 })();
