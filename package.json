@@ -4,9 +4,9 @@
   "description": "Generates a html book from CS225's website.",
   "main": "main.js",
   "scripts": {
-    "template": "cd ./html_files && template-changer ../template/variables.txt ../template/template.handlebars",
+    "template": "cd ./html_files && template-changer ../template/variables.txt ../template/template.handlebars -r",
     "cleanup": "node entry.js",
-    "start": "cd ./html_files && template-changer ../template/variables.txt ../template/template.handlebars && cd ../ && node entry.js",
+    "start": "cd ./html_files && template-changer ../template/variables.txt ../template/template.handlebars -r && cd ../ && node entry.js",
     "test": "node test.js"
   },
   "repository": {
