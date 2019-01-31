@@ -6,6 +6,7 @@ let fixDropdowns = require('./fixDropdowns');
 let fixTables = require('./fixTables.js');
 let removeArrows = require('./removeArrows.js');
 let replaceCodeBlocks = require('./replaceCodeBlocks.js');
+let beautifyHTML = require('./beautifyHTML.js');
 
 module.exports = function (htmlObj) {
     return [
@@ -17,6 +18,7 @@ module.exports = function (htmlObj) {
         fixDropdowns,
         fixTables,
         removeArrows,
-        replaceCodeBlocks
+        replaceCodeBlocks,
+        beautifyHTML
     ];
 };
