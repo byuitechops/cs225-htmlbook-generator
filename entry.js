@@ -16,7 +16,7 @@ function getInput(dir, callback) {
                     if (err) {
                         callback(err, null, getOutput);
                     }
-                    filePath = filePath.slice([filePath.search(/michaelmclaughlin.info/g)]);
+                    filePath = filePath.slice([filePath.search(/db1/g)]);
                     callback(null, {
                         filePath,
                         htmlText
@@ -44,5 +44,5 @@ function getOutput(err, htmlObj) {
 }
 
 (function () {
-    getInput('./html_files/TChanger_template/michaelmclaughlin.info', main);
+    getInput('./html_files/michaelmclaughlin.info/TChanger_template/db1', main);
 })();

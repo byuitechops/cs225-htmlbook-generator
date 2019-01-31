@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <title>{{title}}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="C:\Users\kilakal\Documents\work\cs225-htmlbook-generator\template\main.css" rel="stylesheet">
-    <link href="C:\Users\kilakal\Documents\work\cs225-htmlbook-generator\materialize\css\materialize.min.css" rel="stylesheet">
-    <link href="C:\Users\kilakal\Documents\work\cs225-htmlbook-generator\prism\prism.css" rel="stylesheet">
+    <link href="{{pathToRoot}}\main.css" rel="stylesheet">
+    <link href="{{pathToRoot}}\materialize\css\materialize.min.css" rel="stylesheet">
+    <link href="{{pathToRoot}}\prism\prism.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
@@ -18,7 +18,7 @@
             <p class="left"><a href=""></a></p>
         </div>
         <div class="col s4">
-            <p class="center-align"><a href="C:\Users\kilakal\Documents\work\cs225-htmlbook-generator\new_html_files\michaelmclaughlin.info\db1\index.html">Table
+            <p class="center-align"><a href="{{pathToRoot}}\new_html_files\michaelmclaughlin.info\db1\index.html">Table
                     of Contents</a></p>
         </div>
         <div class="col s4">
@@ -28,9 +28,9 @@
     <div id="content-wrapper">
         {{{container}}}
     </div>
-    <script src="C:\Users\kilakal\Documents\work\cs225-htmlbook-generator\prism\prism.js"></script>
-    <script src="C:\Users\kilakal\Documents\work\cs225-htmlbook-generator\materialize\js\materialize.min.js"></script>
-    <script src="C:\Users\kilakal\Documents\work\cs225-htmlbook-generator\template\main.js"></script>
+    <script src="{{pathToRoot}}\prism\prism.js"></script>
+    <script src="{{pathToRoot}}\materialize\js\materialize.min.js"></script>
+    <script src="{{pathToRoot}}\main.js"></script>
 </body>
 
 </html>
