@@ -4,31 +4,33 @@
 <head>
     <meta charset="utf-8">
     <title>{{title}}</title>
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-    <link href="../Web%20Files/course.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{pathToRoot}}\main.css" rel="stylesheet">
+    <link href="{{pathToRoot}}\materialize\css\materialize.min.css" rel="stylesheet">
+    <link href="{{pathToRoot}}\prism\prism.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
-    <div id="main">
-        {{#if isSplash}}
-        <div id="header" class="splash">
-            <img alt="Course Banner" src="../Web%20Files/largeBanner.png" />
+    <div class="row" id="nav">
+        <div class="col s4">
+            <p class="left"><a href=""></a></p>
         </div>
-        {{else}}
-        <div id="header">
-            <img alt="Course Banner" src="../Web%20Files/smallBanner.png" />
+        <div class="col s4">
+            <p class="center-align"><a href="{{pathToRoot}}\db1\index.html">Table
+                    of Contents</a></p>
         </div>
-        {{/if}}
-        <div id="article">
-            {{{middle}}}
-            <div>
-                {{#each paragraphs}}
-                <p>{{this}}</p>
-                {{/each}}
-            </div>
+        <div class="col s4">
+            <p class="right"><a href=""></a></p>
         </div>
     </div>
-    <script src="../Web%20Files/course.js"></script>
+    <div id="content-wrapper">
+        {{{container}}}
+    </div>
+    <script src="{{pathToRoot}}\prism\prism.js"></script>
+    <script src="{{pathToRoot}}\materialize\js\materialize.min.js"></script>
+    <script src="{{pathToRoot}}\main.js"></script>
 </body>
 
 </html>

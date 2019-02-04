@@ -4,9 +4,10 @@
   "description": "Generates a html book from CS225's website.",
   "main": "main.js",
   "scripts": {
-    "template": "cd ./html_files && template-changer ../template/variables.txt ../template/template.handlebars",
-    "start": "node entry.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "template": "cd ./html_files/michaelmclaughlin.info && template-changer ../../template/variables.txt ../../template/template.handlebars -r",
+    "cleanup": "node entry.js",
+    "start": "cd ./html_files/michaelmclaughlin.info && template-changer ../../template/variables.txt ../../template/template.handlebars -r && cd ../../ && node entry.js",
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,9 @@
   "homepage": "https://github.com/byuitechops/cs225-htmlbook-generator#readme",
   "dependencies": {
     "async": "^2.6.1",
-    "cheerio": "^1.0.0-rc.2"
+    "cheerio": "^1.0.0-rc.2",
+    "js-beautify": "^1.8.9",
+    "recursive-readdir": "^2.2.2",
+    "write": "^1.0.3"
   }
 }
