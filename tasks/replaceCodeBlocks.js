@@ -1,6 +1,30 @@
 const cheerio = require('cheerio');
 let $;
 
+/************************************************
+ *               replaceCodeBlocks
+ * 
+ * Parameters:
+ *  1. htmlObj : Object
+ *  2. callback : Function
+ * 
+ * Description:
+ *  The replaceCodeBlocks function recieves an
+ *  htmlObj and a callback function. The main
+ *  purpose of this function is to replace the
+ *  current CSS for codeblocks with the new CSS
+ *  for codeblocks. To do this the function uses
+ *  the Cheerio library to load the HTML, select
+ *  the old codeblocks and replace the style
+ *  with the new CSS.
+ * 
+ * Return Type:
+ *  Void
+ * 
+ * Author(s):
+ *  Cal Wilson
+ * 
+ ************************************************/
 function replaceCodeBlocks(htmlObj, callback) {
     $ = cheerio.load(htmlObj.htmlText);
     let wpSyntaxClasses = $('.wp_syntax');

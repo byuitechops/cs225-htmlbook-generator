@@ -1,6 +1,31 @@
 const cheerio = require('cheerio');
 let $;
 
+/************************************************
+ *               fixContentLinks()
+ * 
+ * Parameters:
+ *  1. htmlObj : Object
+ *  2. callback : Function
+ * 
+ * Description:
+ *  The fixContentLinks function receives an
+ *  htmlObj and a callback function. The main
+ *  purpose of the function is to find all anchor
+ *  and image tags that link to the wp-content
+ *  directory and change the path to the new
+ *  content directory. To do this we use the
+ *  Cheerio library, load the html, select and
+ *  filter the anchor and image tags, and replace
+ *  the path from wp-content to content.
+ * 
+ * Return Type:
+ *  Void
+ * 
+ * Author(s):
+ *  Cal Wilson
+ * 
+ ************************************************/
 function fixContentLinks(htmlObj, callback) {
     $ = cheerio.load(htmlObj.htmlText);
     let contentLinks = $('a, img').filter(function () {
