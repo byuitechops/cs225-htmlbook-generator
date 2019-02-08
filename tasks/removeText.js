@@ -25,7 +25,7 @@ let $;
  ************************************************/
 function removeText(htmlObj, callback) {
     $ = cheerio.load(htmlObj.htmlText);
-    let textToRemove = '.comments, .signature, .tags, .dropdownclick:contains("Display Text"), #bubble, #loginslider, h1>a, #sidebar, form, #comments, .commentlist, .comment_meta, #respond, .reply';
+    let textToRemove = '.comments, .signature, .tags, .dropdownclick:contains("Display Text"), #bubble, #loginslider, h1>a, #sidebar, form, #comments, .commentlist, .comment_meta, #respond, .reply, iframe, .navigation, .footer, #footer';
     $(textToRemove).each(function () {
         let element = $(this);
         element.replaceWith('');

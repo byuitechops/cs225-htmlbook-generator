@@ -1,2 +1,2 @@
-*container    | #container                   | html
+*container    | body                         | html
 *title        | #content>h2:first-child      | text
