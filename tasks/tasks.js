@@ -6,6 +6,7 @@ let fixULTags = require('./fixULTags.js');
 let fixDropdowns = require('./fixDropdowns');
 let fixTables = require('./fixTables.js');
 let fixContentLinks = require('./fixContentLinks.js');
+let fixInsecurelinks = require('./fixInsecureLinks.js');
 let removeArrows = require('./removeArrows.js');
 let replaceCodeBlocks = require('./replaceCodeBlocks.js');
 let beautifyHTML = require('./beautifyHTML.js');
@@ -42,6 +43,7 @@ module.exports = function (htmlObj) {
         fixDropdowns,
         fixTables,
         fixContentLinks,
+        fixInsecurelinks,
         removeArrows,
         replaceCodeBlocks,
         beautifyHTML
