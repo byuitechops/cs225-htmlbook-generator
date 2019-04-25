@@ -44,6 +44,8 @@ function getInput(dir, callback) {
                         callback(err, null, getOutput);
                     }
                     filePath = filePath.slice([filePath.search(/db1/g)]);
+                    // DB2 CODE
+                    // filePath = filePath.slice([filePath.search(/db2/g)]);
                     callback(null, {
                         filePath,
                         htmlText
@@ -92,10 +94,20 @@ function getOutput(err, htmlObj) {
                 console.log('HTML file successfully written');
             }
         });
+        // DB2 CODE
+        // writeFile(`C:/Users/kilakal/Documents/work/db2/${htmlObj.filePath}`, htmlObj.htmlText, err => {
+        //     if (err) {
+        //         console.error(err);
+        //     } else {
+        //         console.log('HTML file successfully written');
+        //     }
+        // });
     }
     return;
 }
 
 (function () {
     getInput('./html_files/michaelmclaughlin.info/TChanger_template/db1', main);
+    // DB2 CODE
+    // getInput('C:/Users/kilakal/Documents/work/db2/cit-325-lab-instructions', main);
 })();
