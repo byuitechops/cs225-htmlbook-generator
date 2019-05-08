@@ -43,12 +43,13 @@ function getInput(dir, callback) {
                     if (err) {
                         callback(err, null, getOutput);
                     }
-                    filePath = filePath.slice([filePath.search(/db1/g)]);
+                    //filePath = filePath.slice([filePath.search(/db1/g)]);
                     // DB2 CODE
-                    // filePath = filePath.slice([filePath.search(/db2/g)]);
+                    filePath = filePath.slice([filePath.search(/db2/g)]);
                     callback(null, {
                         filePath,
-                        htmlText
+                        htmlText,
+                        externalContent: []
                     }, getOutput);
                 });
             });
@@ -91,9 +92,13 @@ function getOutput(err, htmlObj) {
             if (err) {
                 console.error(err);
             } else {
-                console.log('HTML file successfully written');
+                console.log(`HTML file successfully written: ${htmlObj.filePath}`);
+                if (htmlObj.externalContent.length > 0) {
+                    fs.writeFileSync(`./reports/externalContent_${Date.now()}.json`, JSON.stringify(htmlObj.externalContent));
+                }
             }
         });
+
         // DB2 CODE
         // writeFile(`C:/Users/kilakal/Documents/work/db2/${htmlObj.filePath}`, htmlObj.htmlText, err => {
         //     if (err) {
@@ -103,11 +108,14 @@ function getOutput(err, htmlObj) {
         //     }
         // });
     }
+
     return;
 }
 
 (function () {
+    // getInput('C:/Users/kilakal/Documents/Eqella/CIT_225_Textbook/db1', main);
     getInput('./html_files/michaelmclaughlin.info/TChanger_template/db1', main);
+
     // DB2 CODE
-    // getInput('C:/Users/kilakal/Documents/work/db2/cit-325-lab-instructions', main);
+    // getInput('C:/Users/kilakal/Documents/Eqella/CIT 325 Textbook/db2/cit-325-lab-instructions', main);
 })();

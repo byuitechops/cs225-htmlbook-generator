@@ -8,8 +8,11 @@ let fixTables = require('./fixTables.js');
 let fixContentLinks = require('./fixContentLinks.js');
 let fixInsecurelinks = require('./fixInsecureLinks.js');
 let removeArrows = require('./removeArrows.js');
+let removeInlineStyles = require('./removeInlineStyes.js');
 let replaceCodeBlocks = require('./replaceCodeBlocks.js');
+let replaceExternalLinks = require('./replaceExternalLinks.js');
 let beautifyHTML = require('./beautifyHTML.js');
+// let findAllExternalContent = require('./findAllExternalContent');
 
 /************************************************
  *                   tasks()
@@ -45,7 +48,10 @@ module.exports = function (htmlObj) {
         fixContentLinks,
         fixInsecurelinks,
         removeArrows,
+        removeInlineStyles,
         replaceCodeBlocks,
-        beautifyHTML
+        replaceExternalLinks,
+        beautifyHTML,
+        //findAllExternalContent // This makes reports for each files external images and links.
     ];
 };

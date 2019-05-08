@@ -25,12 +25,12 @@ function fixInsecureLinks(htmlObj, callback) {
     insecureHrefLinks.each((i, insecureLink) => {
         let badLink = $(insecureLink).attr('href');
         let goodLink = badLink.replace(rx, 'https:');
-        $(insecureLink).attr('href', goodLink);
+        $(insecureHrefLinks[i]).attr('href', goodLink);
     });
     insecureImageLinks.each((i, insecureLink) => {
         let badLink = $(insecureLink).attr('src');
         let goodLink = badLink.replace(rx, 'https:');
-        $(insecureLink).attr('src', goodLink);
+        $(insecureImageLinks[i]).attr('src', goodLink);
     });
     htmlObj.htmlText = $.html();
     callback(null, htmlObj);
